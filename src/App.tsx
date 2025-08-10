@@ -206,26 +206,24 @@ function App() {
                   />
                 </div>
                 
-                {masterModeSettings.showUnassigned && (
-                  <div className="space-y-1">
-                    <Label htmlFor="jis-level" className="text-xs text-blue-600">JIS水準</Label>
-                    <Select 
-                      value={masterModeSettings.unassignedJisLevel} 
-                      onValueChange={(value: UnassignedJISLevel) => updateUnassignedJisLevel(value)}
-                    >
-                      <SelectTrigger className="h-8 text-xs bg-white">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {JIS_LEVELS.map((level) => (
-                          <SelectItem key={level} value={level}>
-                            {JIS_LEVEL_LABELS[level]}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
+                <div className="space-y-1">
+                  <Label htmlFor="jis-level" className={`text-xs ${!masterModeSettings.showUnassigned ? 'text-gray-400' : 'text-blue-600'}`}>JIS水準</Label>
+                  <Select 
+                    value={masterModeSettings.unassignedJisLevel} 
+                    onValueChange={masterModeSettings.showUnassigned ? (value: UnassignedJISLevel) => updateUnassignedJisLevel(value) : undefined}
+                  >
+                    <SelectTrigger className={`h-8 text-xs bg-white ${!masterModeSettings.showUnassigned ? 'opacity-50 pointer-events-none' : ''}`}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {JIS_LEVELS.map((level) => (
+                        <SelectItem key={level} value={level}>
+                          {JIS_LEVEL_LABELS[level]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
           )}

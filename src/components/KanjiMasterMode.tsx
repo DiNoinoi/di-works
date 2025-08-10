@@ -6,13 +6,14 @@ import { Switch } from './ui/switch';
 import { Label } from './ui/label';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { Badge } from './ui/badge';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye } from 'lucide-react';
 
 // 新しい統合constants
 import { OFFICIAL_KANJI_LEVELS } from '../constants/kanjiLevels';
 import { FILTER_MODES } from '../constants/filterModes';
 import { JIS_LEVELS, JIS_LEVEL_LABELS, JIS_LEVEL_4 } from '../constants/jisLevels';
 import { LEVEL_PRE1 } from '../constants/kanjiLevels';
+import { getLevelColor, LEVEL_COLORS } from '../constants/colors';
 import type { MasterModeSettings, FilterMode, UnassignedJISLevel } from '../types/settings';
 
 // 漢字データの例
@@ -40,21 +41,6 @@ const kanjiData: { [key: string]: { level: string; reading: string; meaning: str
   '動': { level: '3級', reading: 'ドウ・うご', meaning: '動く・変化' }
 };
 
-const levelColors: { [key: string]: string } = {
-  '10級': 'bg-green-100 text-green-800',
-  '9級': 'bg-green-200 text-green-800',
-  '8級': 'bg-blue-100 text-blue-800',
-  '7級': 'bg-blue-200 text-blue-800',
-  '6級': 'bg-cyan-100 text-cyan-800',
-  '5級': 'bg-pink-100 text-pink-800',
-  '4級': 'bg-indigo-100 text-indigo-800',
-  '3級': 'bg-yellow-100 text-yellow-800',
-  '2級': 'bg-orange-100 text-orange-800',
-  '準2級': 'bg-orange-200 text-orange-800',
-  '準1級': 'bg-red-100 text-red-800',
-  '1級': 'bg-red-200 text-red-800',
-  '配当外': 'bg-violet-100 text-violet-800'
-};
 
 interface KanjiCharProps {
   char: string;
@@ -70,7 +56,7 @@ const KanjiChar: React.FC<KanjiCharProps> = ({ char, data, isHighlighted }) => {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <span className={`px-1 rounded ${levelColors[data.level]} cursor-pointer transition-all hover:shadow-sm`}>
+        <span className={`px-1 rounded ${getLevelColor(data.level)} cursor-pointer transition-all hover:shadow-sm`}>
           {char}
         </span>
       </TooltipTrigger>
@@ -102,7 +88,6 @@ export function KanjiMasterMode({ onSettingsChange, currentSettings }: KanjiMast
   const [filterMode, setFilterMode] = useState<FilterMode>(currentSettings?.filterMode || FILTER_MODES.ALL);
   const [showUnassigned, setShowUnassigned] = useState(currentSettings?.showUnassigned || false);
   const [unassignedJisLevel, setUnassignedJisLevel] = useState<UnassignedJISLevel>(currentSettings?.unassignedJisLevel || JIS_LEVEL_4);
-  const [showMode, setShowMode] = useState(true);
 
   // 設定が変更されたときにコールバックを呼ぶ
   useEffect(() => {
@@ -125,12 +110,11 @@ export function KanjiMasterMode({ onSettingsChange, currentSettings }: KanjiMast
   const userLevelIndex = OFFICIAL_KANJI_LEVELS.indexOf(userLevel as typeof OFFICIAL_KANJI_LEVELS[number]);
 
   const shouldHighlight = (kanjiLevel: string): boolean => {
-    if (!showMode) return false;
     if (filterMode === FILTER_MODES.ALL) return true;
-    
+
     const kanjiLevelIndex = OFFICIAL_KANJI_LEVELS.indexOf(kanjiLevel as typeof OFFICIAL_KANJI_LEVELS[number]);
     if (kanjiLevelIndex === -1) return true; // 配当外は常に表示
-    
+
     if (filterMode === FILTER_MODES.ABOVE) {
       return kanjiLevelIndex <= userLevelIndex;
     } else if (filterMode === FILTER_MODES.AT_OR_BELOW) {
@@ -144,7 +128,7 @@ export function KanjiMasterMode({ onSettingsChange, currentSettings }: KanjiMast
     return text.split('').map((char, index) => {
       const data = kanjiData[char];
       const isHighlighted = data ? shouldHighlight(data.level) : false;
-      
+
       return (
         <KanjiChar
           key={index}
@@ -171,9 +155,9 @@ export function KanjiMasterMode({ onSettingsChange, currentSettings }: KanjiMast
             <p className="text-gray-600 mb-4">
               投稿テキスト内の漢字を配当級別に色分けして表示します。漢字にカーソルを合わせると詳細情報が表示されます。
             </p>
-            
+
             {/* フィルタ設定 */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className={`grid grid-cols-1 md:grid-cols-4 gap-4 mb-6`}>
               <div className="space-y-2">
                 <Label htmlFor="user-level">保持級</Label>
                 <Select value={userLevel} onValueChange={setUserLevel}>
@@ -187,7 +171,7 @@ export function KanjiMasterMode({ onSettingsChange, currentSettings }: KanjiMast
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="filter-mode">フィルタ</Label>
                 <Select value={filterMode} onValueChange={(value: FilterMode) => setFilterMode(value)}>
@@ -201,7 +185,7 @@ export function KanjiMasterMode({ onSettingsChange, currentSettings }: KanjiMast
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="unassigned-mode">配当外漢字表示</Label>
                 <div className="flex items-center space-x-2">
@@ -215,57 +199,48 @@ export function KanjiMasterMode({ onSettingsChange, currentSettings }: KanjiMast
                   </Label>
                 </div>
               </div>
-              
-              {showUnassigned && (
-                <div className="space-y-2">
-                  <Label htmlFor="jis-level-select">JIS水準設定</Label>
-                  <Select value={unassignedJisLevel} onValueChange={(value: UnassignedJISLevel) => setUnassignedJisLevel(value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {JIS_LEVELS.map((level) => (
-                        <SelectItem key={level} value={level}>
-                          {JIS_LEVEL_LABELS[level]}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-              
+
               <div className="space-y-2">
-                <Label htmlFor="show-mode">表示モード</Label>
-                <Button
-                  variant={showMode ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setShowMode(!showMode)}
-                  className="w-full"
+                <Label htmlFor="jis-level-select" className={!showUnassigned ? 'text-gray-400' : ''}>JIS水準設定</Label>
+                <Select
+                  value={unassignedJisLevel}
+                  onValueChange={showUnassigned ? (value: UnassignedJISLevel) => setUnassignedJisLevel(value) : undefined}
                 >
-                  {showMode ? (
-                    <>
-                      <Eye className="w-4 h-4 mr-2" />
-                      表示中
-                    </>
-                  ) : (
-                    <>
-                      <EyeOff className="w-4 h-4 mr-2" />
-                      非表示
-                    </>
-                  )}
-                </Button>
+                  <SelectTrigger className={!showUnassigned ? 'opacity-50 pointer-events-none' : ''}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {JIS_LEVELS.map((level) => (
+                      <SelectItem key={level} value={level}>
+                        {JIS_LEVEL_LABELS[level]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
             {/* 配当級凡例 */}
             <div className="mb-6">
               <h3 className="text-sm font-semibold mb-2">配当級凡例</h3>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {Object.entries(LEVEL_COLORS)
+                  .filter(([level]) => OFFICIAL_KANJI_LEVELS.includes(level as any))
+                  .map(([level, colorClass]) => (
+                    <Badge key={level} className={colorClass}>
+                      {level}
+                    </Badge>
+                  ))}
+              </div>
+              <h3 className="text-sm font-semibold mb-2">配当外凡例</h3>
               <div className="flex flex-wrap gap-2">
-                {Object.entries(levelColors).map(([level, colorClass]) => (
-                  <Badge key={level} className={colorClass}>
-                    {level}
-                  </Badge>
-                ))}
+                {Object.entries(LEVEL_COLORS)
+                  .filter(([level]) => JIS_LEVELS.includes(level as any))
+                  .map(([level, colorClass]) => (
+                    <Badge key={level} className={colorClass}>
+                      {level}
+                    </Badge>
+                  ))}
               </div>
             </div>
           </CardContent>

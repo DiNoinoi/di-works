@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Separator } from './ui/separator';
 import { BookOpen, Plus, Search, Filter, ExternalLink, Quote } from 'lucide-react';
+import { getLevelColor } from '../constants/colors';
 
 interface DictionaryEntry {
   id: number;
@@ -92,21 +93,6 @@ export function UserDictionary() {
 
   const levels = ['10級', '9級', '8級', '7級', '6級', '5級', '4級', '3級', '準2級', '2級', '準1級', '1級', '配当外'];
 
-  const levelColors: { [key: string]: string } = {
-    '10級': 'bg-green-100 text-green-800',
-    '9級': 'bg-green-200 text-green-800',
-    '8級': 'bg-blue-100 text-blue-800',
-    '7級': 'bg-blue-200 text-blue-800',
-    '6級': 'bg-cyan-100 text-cyan-800',
-    '5級': 'bg-pink-100 text-pink-800',
-    '4級': 'bg-indigo-100 text-indigo-800',
-    '3級': 'bg-yellow-100 text-yellow-800',
-    '2級': 'bg-orange-100 text-orange-800',
-    '準2級': 'bg-orange-200 text-orange-800',
-    '準1級': 'bg-red-100 text-red-800',
-    '1級': 'bg-red-200 text-red-800',
-    '配当外': 'bg-violet-100 text-violet-800'
-  };
 
   const validateTerm = (term: string): boolean => {
     // 漢字を含むかチェック（簡易版）
@@ -281,7 +267,7 @@ export function UserDictionary() {
                         <div className="flex items-start justify-between">
                           <div className="flex items-center gap-3">
                             <h3 className="text-xl font-bold">{entry.term}</h3>
-                            <Badge className={levelColors[entry.level]}>
+                            <Badge className={getLevelColor(entry.level)}>
                               {entry.level}
                             </Badge>
                             {!entry.isRegistered && (

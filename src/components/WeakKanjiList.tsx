@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { AlertTriangle, TrendingDown, Target, BookOpen, RotateCcw, CheckCircle, XCircle } from 'lucide-react';
+import { getLevelColor } from '../constants/colors';
 
 interface WeakKanji {
   id: number;
@@ -100,15 +101,6 @@ export function WeakKanjiList() {
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
 
-  const levelColors: { [key: string]: string } = {
-    '1級': 'bg-red-200 text-red-800',
-    '準1級': 'bg-red-100 text-red-800',
-    '2級': 'bg-orange-100 text-orange-800',
-    '準2級': 'bg-orange-200 text-orange-800',
-    '3級': 'bg-yellow-100 text-yellow-800',
-    '4級': 'bg-indigo-100 text-indigo-800',
-    '5級': 'bg-pink-100 text-pink-800'
-  };
 
   const statusColors = {
     'not-started': 'bg-gray-100 text-gray-800',
@@ -291,7 +283,7 @@ export function WeakKanjiList() {
                               </div>
                               <div className="space-y-2">
                                 <div className="flex items-center gap-2">
-                                  <Badge className={levelColors[kanji.level]}>
+                                  <Badge className={getLevelColor(kanji.level)}>
                                     {kanji.level}
                                   </Badge>
                                   <Badge variant="outline">

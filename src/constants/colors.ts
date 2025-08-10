@@ -1,4 +1,4 @@
-import { 
+import {
   LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_5, LEVEL_6, LEVEL_7, LEVEL_8, LEVEL_9, LEVEL_10,
   LEVEL_PRE1, LEVEL_PRE2, LEVEL_UNASSIGNED
 } from './kanjiLevels';
@@ -21,8 +21,7 @@ export const LEVEL_COLORS: { [key: string]: string } = {
   [LEVEL_2]: 'bg-orange-100 text-orange-800',
   [LEVEL_PRE1]: 'bg-red-100 text-red-800',
   [LEVEL_1]: 'bg-red-200 text-red-800',
-  [LEVEL_UNASSIGNED]: 'bg-gray-100 text-gray-800',
-  
+
   // 配当外漢字JIS水準の色（紫系統で特別感を演出）
   [JIS_LEVEL_1]: 'bg-violet-100 text-violet-800',
   [JIS_LEVEL_2]: 'bg-violet-200 text-violet-800',
