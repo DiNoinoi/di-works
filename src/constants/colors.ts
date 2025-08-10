@@ -14,7 +14,7 @@ export const LEVEL_COLORS: { [key: string]: string } = {
   [LEVEL_8]: 'bg-blue-100 text-blue-800',
   [LEVEL_7]: 'bg-blue-200 text-blue-800',
   [LEVEL_6]: 'bg-cyan-100 text-cyan-800',
-  [LEVEL_5]: 'bg-purple-100 text-purple-800',
+  [LEVEL_5]: 'bg-pink-100 text-pink-800',
   [LEVEL_4]: 'bg-indigo-100 text-indigo-800',
   [LEVEL_3]: 'bg-yellow-100 text-yellow-800',
   [LEVEL_PRE2]: 'bg-orange-200 text-orange-800',

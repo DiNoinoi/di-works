@@ -46,14 +46,14 @@ const levelColors: { [key: string]: string } = {
   '8級': 'bg-blue-100 text-blue-800',
   '7級': 'bg-blue-200 text-blue-800',
   '6級': 'bg-cyan-100 text-cyan-800',
-  '5級': 'bg-purple-100 text-purple-800',
+  '5級': 'bg-pink-100 text-pink-800',
   '4級': 'bg-indigo-100 text-indigo-800',
   '3級': 'bg-yellow-100 text-yellow-800',
   '2級': 'bg-orange-100 text-orange-800',
   '準2級': 'bg-orange-200 text-orange-800',
   '準1級': 'bg-red-100 text-red-800',
   '1級': 'bg-red-200 text-red-800',
-  '配当外': 'bg-gray-100 text-gray-800'
+  '配当外': 'bg-violet-100 text-violet-800'
 };
 
 interface KanjiCharProps {

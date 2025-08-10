@@ -107,7 +107,7 @@ export function WeakKanjiList() {
     '準2級': 'bg-orange-200 text-orange-800',
     '3級': 'bg-yellow-100 text-yellow-800',
     '4級': 'bg-indigo-100 text-indigo-800',
-    '5級': 'bg-purple-100 text-purple-800'
+    '5級': 'bg-pink-100 text-pink-800'
   };
 
   const statusColors = {
