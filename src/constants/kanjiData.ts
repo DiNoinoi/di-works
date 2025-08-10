@@ -110,9 +110,6 @@ export const KANJI_DATA: Map<number, KanjiInfo> = new Map([
   [0x6822, { level: JIS_LEVEL_1, reading: 'ハク・ヒャク・ビャク・かしわ', meaning: '柏の異字体・カシワ' }], // '栢'
   [0x7895, { level: JIS_LEVEL_1, reading: 'キ・さい・さき', meaning: '埼の異字体・地名用' }],      // '碕'
   [0x548B, { level: JIS_LEVEL_1, reading: 'サ・サク・く-う・く-らう', meaning: 'くう・くらう' }],        // '咋'
-  [0x68EE, { level: JIS_LEVEL_1, reading: 'シン・もり', meaning: '森・森林' }],                // '森'
-  [0x5CA9, { level: JIS_LEVEL_1, reading: 'キョウ・みさき', meaning: '岬・突き出た陸地' }],       // '岬'
-  [0x65E5, { level: JIS_LEVEL_1, reading: 'ニチ・ジツ・ひ・か', meaning: '日・太陽・日にち' }]      // '日'
 ]);
 
 /**
