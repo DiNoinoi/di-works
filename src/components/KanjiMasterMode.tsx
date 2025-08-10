@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
@@ -6,7 +6,14 @@ import { Switch } from './ui/switch';
 import { Label } from './ui/label';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { Badge } from './ui/badge';
-import { Filter, Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
+
+// 新しい統合constants
+import { KANJI_LEVELS } from '../constants/kanjiLevels';
+import { FILTER_MODES } from '../constants/filterModes';
+import { JIS_LEVELS, JIS_LEVEL_LABELS, JIS_LEVEL_4 } from '../constants/jisLevels';
+import { LEVEL_PRE1 } from '../constants/kanjiLevels';
+import type { MasterModeSettings, FilterMode, UnassignedJISLevel } from '../types/settings';
 
 // 漢字データの例
 const kanjiData: { [key: string]: { level: string; reading: string; meaning: string; } } = {
@@ -53,10 +60,9 @@ interface KanjiCharProps {
   char: string;
   data?: { level: string; reading: string; meaning: string; };
   isHighlighted: boolean;
-  compoundMode: boolean;
 }
 
-const KanjiChar: React.FC<KanjiCharProps> = ({ char, data, isHighlighted, compoundMode }) => {
+const KanjiChar: React.FC<KanjiCharProps> = ({ char, data, isHighlighted }) => {
   if (!data || !isHighlighted) {
     return <span>{char}</span>;
   }
@@ -87,22 +93,15 @@ const KanjiChar: React.FC<KanjiCharProps> = ({ char, data, isHighlighted, compou
 };
 
 interface KanjiMasterModeProps {
-  onSettingsChange?: (settings: {
-    userLevel: string;
-    filterMode: 'above' | 'at_or_below' | 'all';
-    compoundMode: boolean;
-  }) => void;
-  currentSettings?: {
-    userLevel: string;
-    filterMode: 'above' | 'at_or_below' | 'all';
-    compoundMode: boolean;
-  };
+  onSettingsChange?: (settings: MasterModeSettings) => void;
+  currentSettings?: MasterModeSettings;
 }
 
 export function KanjiMasterMode({ onSettingsChange, currentSettings }: KanjiMasterModeProps) {
-  const [userLevel, setUserLevel] = useState(currentSettings?.userLevel || '準1級');
-  const [filterMode, setFilterMode] = useState<'above' | 'at_or_below' | 'all'>(currentSettings?.filterMode || 'all');
-  const [compoundMode, setCompoundMode] = useState(currentSettings?.compoundMode || false);
+  const [userLevel, setUserLevel] = useState(currentSettings?.userLevel || LEVEL_PRE1);
+  const [filterMode, setFilterMode] = useState<FilterMode>(currentSettings?.filterMode || FILTER_MODES.ALL);
+  const [showUnassigned, setShowUnassigned] = useState(currentSettings?.showUnassigned || false);
+  const [unassignedJisLevel, setUnassignedJisLevel] = useState<UnassignedJISLevel>(currentSettings?.unassignedJisLevel || JIS_LEVEL_4);
   const [showMode, setShowMode] = useState(true);
 
   // 設定が変更されたときにコールバックを呼ぶ
@@ -111,10 +110,11 @@ export function KanjiMasterMode({ onSettingsChange, currentSettings }: KanjiMast
       onSettingsChange({
         userLevel,
         filterMode,
-        compoundMode
+        showUnassigned,
+        unassignedJisLevel
       });
     }
-  }, [userLevel, filterMode, compoundMode, onSettingsChange]);
+  }, [userLevel, filterMode, showUnassigned, unassignedJisLevel, onSettingsChange]);
 
   const sampleTexts = [
     '今日漢検準1級の勉強をしていて「瀟洒」という美しい漢字に出会いました。',
@@ -122,19 +122,18 @@ export function KanjiMasterMode({ onSettingsChange, currentSettings }: KanjiMast
     '憂き世の感動を表現する漢字の美しさに心を奪われています。'
   ];
 
-  const levelHierarchy = ['10級', '9級', '8級', '7級', '6級', '5級', '4級', '3級', '準2級', '2級', '準1級', '1級'];
-  const userLevelIndex = levelHierarchy.indexOf(userLevel);
+  const userLevelIndex = KANJI_LEVELS.indexOf(userLevel as typeof KANJI_LEVELS[number]);
 
   const shouldHighlight = (kanjiLevel: string): boolean => {
     if (!showMode) return false;
-    if (filterMode === 'all') return true;
+    if (filterMode === FILTER_MODES.ALL) return true;
     
-    const kanjiLevelIndex = levelHierarchy.indexOf(kanjiLevel);
-    if (kanjiLevelIndex === -1) return filterMode === 'all'; // 配当外
+    const kanjiLevelIndex = KANJI_LEVELS.indexOf(kanjiLevel as typeof KANJI_LEVELS[number]);
+    if (kanjiLevelIndex === -1) return true; // 配当外は常に表示
     
-    if (filterMode === 'above') {
+    if (filterMode === FILTER_MODES.ABOVE) {
       return kanjiLevelIndex <= userLevelIndex;
-    } else if (filterMode === 'at_or_below') {
+    } else if (filterMode === FILTER_MODES.AT_OR_BELOW) {
       return kanjiLevelIndex >= userLevelIndex;
     } else {
       return true;
@@ -152,7 +151,6 @@ export function KanjiMasterMode({ onSettingsChange, currentSettings }: KanjiMast
           char={char}
           data={data}
           isHighlighted={isHighlighted}
-          compoundMode={compoundMode}
         />
       );
     });
@@ -183,7 +181,7 @@ export function KanjiMasterMode({ onSettingsChange, currentSettings }: KanjiMast
                     <SelectValue placeholder="保持級を選択" />
                   </SelectTrigger>
                   <SelectContent>
-                    {levelHierarchy.map((level) => (
+                    {KANJI_LEVELS.map((level) => (
                       <SelectItem key={level} value={level}>{level}</SelectItem>
                     ))}
                   </SelectContent>
@@ -192,31 +190,49 @@ export function KanjiMasterMode({ onSettingsChange, currentSettings }: KanjiMast
               
               <div className="space-y-2">
                 <Label htmlFor="filter-mode">フィルタ</Label>
-                <Select value={filterMode} onValueChange={setFilterMode}>
+                <Select value={filterMode} onValueChange={(value: FilterMode) => setFilterMode(value)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="above">保持級以上を表示</SelectItem>
-                    <SelectItem value="at_or_below">保持級以下を表示</SelectItem>
-                    <SelectItem value="all">すべて表示</SelectItem>
+                    <SelectItem value={FILTER_MODES.ABOVE}>保持級以上を表示</SelectItem>
+                    <SelectItem value={FILTER_MODES.AT_OR_BELOW}>保持級以下を表示</SelectItem>
+                    <SelectItem value={FILTER_MODES.ALL}>すべて表示</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="compound-mode">熟語モード</Label>
+                <Label htmlFor="unassigned-mode">配当外漢字表示</Label>
                 <div className="flex items-center space-x-2">
                   <Switch
-                    id="compound-mode"
-                    checked={compoundMode}
-                    onCheckedChange={setCompoundMode}
+                    id="unassigned-mode"
+                    checked={showUnassigned}
+                    onCheckedChange={setShowUnassigned}
                   />
-                  <Label htmlFor="compound-mode" className="text-sm">
-                    {compoundMode ? 'ON' : 'OFF'}
+                  <Label htmlFor="unassigned-mode" className="text-sm">
+                    {showUnassigned ? 'ON' : 'OFF'}
                   </Label>
                 </div>
               </div>
+              
+              {showUnassigned && (
+                <div className="space-y-2">
+                  <Label htmlFor="jis-level-select">JIS水準設定</Label>
+                  <Select value={unassignedJisLevel} onValueChange={(value: UnassignedJISLevel) => setUnassignedJisLevel(value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {JIS_LEVELS.map((level) => (
+                        <SelectItem key={level} value={level}>
+                          {JIS_LEVEL_LABELS[level]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
               
               <div className="space-y-2">
                 <Label htmlFor="show-mode">表示モード</Label>

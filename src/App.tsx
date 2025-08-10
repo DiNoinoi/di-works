@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { PostCreation } from './components/PostCreation';
 import { UserProfile } from './components/UserProfile';
 import { KanjiMasterMode } from './components/KanjiMasterMode';
@@ -15,26 +15,42 @@ import { Label } from './components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './components/ui/select';
 import { Home, PlusCircle, User, Search, MessageCircle, Bell, BookOpen, Eye, AlertTriangle, Settings as SettingsIcon, FileText, EyeOff } from 'lucide-react';
 
-function App() {
-  const [currentView, setCurrentView] = useState('feed');
-  // 漢検マスターモードの状態管理
-  const [masterModeEnabled, setMasterModeEnabled] = useState(false);
-  const [masterModeSettings, setMasterModeSettings] = useState({
-    userLevel: '準1級',
-    filterMode: 'all' as 'above' | 'at_or_below' | 'all',
-    compoundMode: false
-  });
+// 新しい統合constants
+import { NAVIGATION_IDS } from './constants/navigation';
+import { KANJI_LEVELS } from './constants/kanjiLevels';
+import { FILTER_MODES } from './constants/filterModes';
+import { JIS_LEVELS, JIS_LEVEL_LABELS } from './constants/jisLevels';
+import { useUserSettings } from './hooks/useUserSettings';
+import type { FilterMode, UnassignedJISLevel } from './types/settings';
 
+/**
+ * メインアプリケーションコンポーネント
+ * 漢字学習とSNS機能を統合したアプリケーション
+ */
+function App() {
+  const [currentView, setCurrentView] = useState<string>(NAVIGATION_IDS.FEED);
+  
+  // 統合されたユーザー設定管理hook
+  const {
+    masterModeEnabled,
+    masterModeSettings,
+    toggleMasterMode,
+    updateMasterModeSettings,
+    updateShowUnassigned,
+    updateUnassignedJisLevel
+  } = useUserSettings();
+
+  // ナビゲーション項目の定義
   const navigationItems = [
-    { id: 'feed', label: 'ホーム', icon: Home },
-    { id: 'search', label: '検索', icon: Search },
-    { id: 'create', label: '投稿作成', icon: PlusCircle },
-    { id: 'kanji-master', label: '漢字マスター', icon: Eye },
-    { id: 'dictionary', label: '辞書', icon: BookOpen },
-    { id: 'weak-kanji', label: '苦手漢字', icon: AlertTriangle },
-    { id: 'notifications', label: '通知', icon: Bell },
-    { id: 'profile', label: 'プロフィール', icon: User },
-    { id: 'settings', label: '設定', icon: SettingsIcon },
+    { id: NAVIGATION_IDS.FEED, label: 'ホーム', icon: Home },
+    { id: NAVIGATION_IDS.SEARCH, label: '検索', icon: Search },
+    { id: NAVIGATION_IDS.CREATE, label: '投稿作成', icon: PlusCircle },
+    { id: NAVIGATION_IDS.KANJI_MASTER, label: '漢字マスター', icon: Eye },
+    { id: NAVIGATION_IDS.DICTIONARY, label: '辞書', icon: BookOpen },
+    { id: NAVIGATION_IDS.WEAK_KANJI, label: '苦手漢字', icon: AlertTriangle },
+    { id: NAVIGATION_IDS.NOTIFICATIONS, label: '通知', icon: Bell },
+    { id: NAVIGATION_IDS.PROFILE, label: 'プロフィール', icon: User },
+    { id: NAVIGATION_IDS.SETTINGS, label: '設定', icon: SettingsIcon },
   ];
 
   const feedPosts = [
@@ -79,6 +95,16 @@ function App() {
       },
       likes: 31,
       comments: 8
+    },
+    {
+      id: 4,
+      user: '地名研究家',
+      username: '@chimei_lover',
+      time: '8時間前',
+      type: 'normal',
+      content: '地名で使われる配当外漢字を調べています。「栢森」（かしわもり）は柏の異字体「栢」を使った美しい地名ですね。また「碕」（さき）は「埼」の異字体として岬を表す地名によく使われています。配当外漢字にも深い歴史があります。',
+      likes: 18,
+      comments: 7
     }
   ];
 
@@ -107,7 +133,7 @@ function App() {
               <Switch
                 id="master-mode"
                 checked={masterModeEnabled}
-                onCheckedChange={setMasterModeEnabled}
+                onCheckedChange={toggleMasterMode}
               />
             </div>
             
@@ -115,7 +141,7 @@ function App() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setCurrentView('kanji-master')}
+                onClick={() => setCurrentView(NAVIGATION_IDS.KANJI_MASTER)}
                 className="flex items-center gap-2"
               >
                 <SettingsIcon className="w-4 h-4" />
@@ -131,18 +157,18 @@ function App() {
               </p>
               
               {/* クイック設定 */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                 <div className="space-y-1">
                   <Label htmlFor="quick-level" className="text-xs text-blue-700">保持級</Label>
                   <Select 
                     value={masterModeSettings.userLevel} 
-                    onValueChange={(value) => setMasterModeSettings(prev => ({ ...prev, userLevel: value }))}
+                    onValueChange={(value) => updateMasterModeSettings({ ...masterModeSettings, userLevel: value })}
                   >
                     <SelectTrigger className="h-8 text-xs bg-white">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {['10級', '9級', '8級', '7級', '6級', '5級', '4級', '3級', '準2級', '2級', '準1級', '1級'].map((level) => (
+                      {KANJI_LEVELS.map((level) => (
                         <SelectItem key={level} value={level}>{level}</SelectItem>
                       ))}
                     </SelectContent>
@@ -153,18 +179,52 @@ function App() {
                   <Label htmlFor="quick-filter" className="text-xs text-blue-700">フィルタ</Label>
                   <Select 
                     value={masterModeSettings.filterMode} 
-                    onValueChange={(value: 'above' | 'at_or_below' | 'all') => setMasterModeSettings(prev => ({ ...prev, filterMode: value }))}
+                    onValueChange={(value: FilterMode) => updateMasterModeSettings({ ...masterModeSettings, filterMode: value })}
                   >
                     <SelectTrigger className="h-8 text-xs bg-white">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">すべて表示</SelectItem>
-                      <SelectItem value="above">保持級以上</SelectItem>
-                      <SelectItem value="at_or_below">保持級以下</SelectItem>
+                      <SelectItem value={FILTER_MODES.ALL}>すべて表示</SelectItem>
+                      <SelectItem value={FILTER_MODES.ABOVE}>保持級以上</SelectItem>
+                      <SelectItem value={FILTER_MODES.AT_OR_BELOW}>保持級以下</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+              
+              {/* 配当外漢字設定 */}
+              <div className="border-t border-blue-200 pt-3">
+                <div className="flex items-center justify-between mb-2">
+                  <Label htmlFor="unassigned-toggle" className="text-xs text-blue-700">配当外漢字表示</Label>
+                  <Switch
+                    id="unassigned-toggle"
+                    checked={masterModeSettings.showUnassigned}
+                    onCheckedChange={updateShowUnassigned}
+                    className="scale-75"
+                  />
+                </div>
+                
+                {masterModeSettings.showUnassigned && (
+                  <div className="space-y-1">
+                    <Label htmlFor="jis-level" className="text-xs text-blue-600">JIS水準</Label>
+                    <Select 
+                      value={masterModeSettings.unassignedJisLevel} 
+                      onValueChange={(value: UnassignedJISLevel) => updateUnassignedJisLevel(value)}
+                    >
+                      <SelectTrigger className="h-8 text-xs bg-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {JIS_LEVELS.map((level) => (
+                          <SelectItem key={level} value={level}>
+                            {JIS_LEVEL_LABELS[level]}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -194,7 +254,8 @@ function App() {
                         userLevel={masterModeSettings.userLevel}
                         filterMode={masterModeSettings.filterMode}
                         showMode={true}
-                        compoundMode={masterModeSettings.compoundMode}
+                        showUnassigned={masterModeSettings.showUnassigned}
+                        unassignedJisLevel={masterModeSettings.unassignedJisLevel}
                       />
                     ) : (
                       <p>{post.content}</p>
@@ -231,7 +292,8 @@ function App() {
                             userLevel={masterModeSettings.userLevel}
                             filterMode={masterModeSettings.filterMode}
                             showMode={true}
-                            compoundMode={masterModeSettings.compoundMode}
+                            showUnassigned={masterModeSettings.showUnassigned}
+                            unassignedJisLevel={masterModeSettings.unassignedJisLevel}
                           />
                         ) : (
                           <p>{post.quiz.question}</p>
@@ -244,7 +306,7 @@ function App() {
                         <Button 
                           size="sm" 
                           variant="outline"
-                          onClick={() => setCurrentView('post-detail')}
+                          onClick={() => setCurrentView(NAVIGATION_IDS.POST_DETAIL)}
                         >
                           <FileText className="w-3 h-3 mr-1" />
                           詳細
@@ -271,26 +333,30 @@ function App() {
     </div>
   );
 
+  /**
+   * 現在のビューに応じてコンテンツをレンダリング
+   * @returns レンダリングするJSX要素
+   */
   const renderContent = () => {
     switch (currentView) {
-      case 'create':
+      case NAVIGATION_IDS.CREATE:
         return <PostCreation />;
-      case 'profile':
+      case NAVIGATION_IDS.PROFILE:
         return <UserProfile />;
-      case 'kanji-master':
+      case NAVIGATION_IDS.KANJI_MASTER:
         return <KanjiMasterMode 
-          onSettingsChange={(settings) => setMasterModeSettings(settings)}
+          onSettingsChange={updateMasterModeSettings}
           currentSettings={masterModeSettings}
         />;
-      case 'dictionary':
+      case NAVIGATION_IDS.DICTIONARY:
         return <UserDictionary />;
-      case 'weak-kanji':
+      case NAVIGATION_IDS.WEAK_KANJI:
         return <WeakKanjiList />;
-      case 'settings':
+      case NAVIGATION_IDS.SETTINGS:
         return <Settings />;
-      case 'post-detail':
+      case NAVIGATION_IDS.POST_DETAIL:
         return <PostDetail postId={1} />;
-      case 'search':
+      case NAVIGATION_IDS.SEARCH:
         return (
           <div className="text-center py-20">
             <Search className="w-16 h-16 mx-auto mb-4 text-gray-400" />
@@ -298,7 +364,7 @@ function App() {
             <p className="text-gray-600">漢字、ユーザー、クイズを検索できます</p>
           </div>
         );
-      case 'notifications':
+      case NAVIGATION_IDS.NOTIFICATIONS:
         return (
           <div className="text-center py-20">
             <Bell className="w-16 h-16 mx-auto mb-4 text-gray-400" />
