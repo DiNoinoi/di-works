@@ -25,7 +25,7 @@ export const KANJI_DATA: Map<number, KanjiInfo> = new Map([
   [0x52C9, { level: LEVEL_3, reading: 'ベン', meaning: '勉める・努力' }],       // '勉'
   [0x5F37, { level: LEVEL_2, reading: 'キョウ・つよ', meaning: '強い・無理に' }], // '強'
   [0x4E2D, { level: LEVEL_10, reading: 'チュウ・なか', meaning: '中央・途中' }], // '中'
-  [0x7027, { level: LEVEL_1, reading: 'ショウ', meaning: 'すっきりした' }],     // '瀟'
+  [0x701F, { level: LEVEL_1, reading: 'ショウ', meaning: 'すっきりした' }],     // '瀟'
   [0x6D12, { level: LEVEL_1, reading: 'シャ', meaning: 'あっさりした' }],       // '洒'
   [0x6182, { level: LEVEL_PRE1, reading: 'ユウ・うれ', meaning: '心配・憂える' }], // '憂'
   [0x4E16, { level: LEVEL_3, reading: 'セ・よ', meaning: '世の中・時代' }],     // '世'

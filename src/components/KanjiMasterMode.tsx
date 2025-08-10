@@ -9,7 +9,7 @@ import { Badge } from './ui/badge';
 import { Eye, EyeOff } from 'lucide-react';
 
 // 新しい統合constants
-import { KANJI_LEVELS } from '../constants/kanjiLevels';
+import { OFFICIAL_KANJI_LEVELS } from '../constants/kanjiLevels';
 import { FILTER_MODES } from '../constants/filterModes';
 import { JIS_LEVELS, JIS_LEVEL_LABELS, JIS_LEVEL_4 } from '../constants/jisLevels';
 import { LEVEL_PRE1 } from '../constants/kanjiLevels';
@@ -122,13 +122,13 @@ export function KanjiMasterMode({ onSettingsChange, currentSettings }: KanjiMast
     '憂き世の感動を表現する漢字の美しさに心を奪われています。'
   ];
 
-  const userLevelIndex = KANJI_LEVELS.indexOf(userLevel as typeof KANJI_LEVELS[number]);
+  const userLevelIndex = OFFICIAL_KANJI_LEVELS.indexOf(userLevel as typeof OFFICIAL_KANJI_LEVELS[number]);
 
   const shouldHighlight = (kanjiLevel: string): boolean => {
     if (!showMode) return false;
     if (filterMode === FILTER_MODES.ALL) return true;
     
-    const kanjiLevelIndex = KANJI_LEVELS.indexOf(kanjiLevel as typeof KANJI_LEVELS[number]);
+    const kanjiLevelIndex = OFFICIAL_KANJI_LEVELS.indexOf(kanjiLevel as typeof OFFICIAL_KANJI_LEVELS[number]);
     if (kanjiLevelIndex === -1) return true; // 配当外は常に表示
     
     if (filterMode === FILTER_MODES.ABOVE) {
@@ -181,7 +181,7 @@ export function KanjiMasterMode({ onSettingsChange, currentSettings }: KanjiMast
                     <SelectValue placeholder="保持級を選択" />
                   </SelectTrigger>
                   <SelectContent>
-                    {KANJI_LEVELS.map((level) => (
+                    {OFFICIAL_KANJI_LEVELS.map((level) => (
                       <SelectItem key={level} value={level}>{level}</SelectItem>
                     ))}
                   </SelectContent>

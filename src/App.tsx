@@ -14,10 +14,11 @@ import { Switch } from './components/ui/switch';
 import { Label } from './components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './components/ui/select';
 import { Home, PlusCircle, User, Search, MessageCircle, Bell, BookOpen, Eye, AlertTriangle, Settings as SettingsIcon, FileText, EyeOff } from 'lucide-react';
+import { Header } from './components/layout/Header';
 
 // 新しい統合constants
 import { NAVIGATION_IDS } from './constants/navigation';
-import { KANJI_LEVELS } from './constants/kanjiLevels';
+import { OFFICIAL_KANJI_LEVELS } from './constants/kanjiLevels';
 import { FILTER_MODES } from './constants/filterModes';
 import { JIS_LEVELS, JIS_LEVEL_LABELS } from './constants/jisLevels';
 import { useUserSettings } from './hooks/useUserSettings';
@@ -168,7 +169,7 @@ function App() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {KANJI_LEVELS.map((level) => (
+                      {OFFICIAL_KANJI_LEVELS.map((level) => (
                         <SelectItem key={level} value={level}>{level}</SelectItem>
                       ))}
                     </SelectContent>
@@ -380,62 +381,11 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* ヘッダー */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center text-white font-bold">
-                漢
-              </div>
-              <span className="text-xl font-bold">漢字SNS</span>
-            </div>
-            
-            <nav className="hidden lg:flex items-center gap-1">
-              {navigationItems.slice(0, 5).map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Button
-                    key={item.id}
-                    variant={currentView === item.id ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setCurrentView(item.id)}
-                    className="flex items-center gap-2"
-                  >
-                    <Icon className="w-4 h-4" />
-                    {item.label}
-                  </Button>
-                );
-              })}
-              {/* その他のメニュー */}
-              <div className="relative">
-                <Button variant="ghost" size="sm">
-                  その他
-                </Button>
-                {/* ドロップダウンメニューの実装は省略 */}
-              </div>
-            </nav>
-
-            {/* タブレット用ナビゲーション */}
-            <nav className="hidden md:flex lg:hidden items-center gap-1">
-              {navigationItems.slice(0, 3).map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Button
-                    key={item.id}
-                    variant={currentView === item.id ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setCurrentView(item.id)}
-                    className="flex items-center gap-2"
-                  >
-                    <Icon className="w-4 h-4" />
-                    {item.label}
-                  </Button>
-                );
-              })}
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header 
+        currentView={currentView}
+        onViewChange={setCurrentView}
+        navigationItems={navigationItems}
+      />
 
       {/* メインコンテンツ */}
       <main className="max-w-6xl mx-auto px-4 py-8">
