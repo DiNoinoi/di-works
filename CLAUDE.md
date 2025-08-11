@@ -28,7 +28,7 @@ npm run lint
 npm run preview
 ```
 
-## 現在のプロジェクト構造
+## 現在のプロジェクト構造（最新）
 ```
 src/
 ├── App.tsx                      # メインアプリケーション
@@ -44,7 +44,7 @@ src/
 │   │   ├── card.tsx
 │   │   ├── badge.tsx
 │   │   └── ... (その他多数)
-│   ├── KanjiMasterMode.tsx      # 漢検マスターモード設定
+│   ├── KankenMasterMode.tsx     # 漢検マスターモード設定
 │   ├── KanjiProcessor.tsx       # 漢字処理・表示コンポーネント
 │   ├── PostCreation.tsx         # 投稿作成
 │   ├── PostDetail.tsx           # 投稿詳細
@@ -59,12 +59,19 @@ src/
 │   ├── jisLevels.ts             # JIS水準定義
 │   └── navigation.ts            # ナビゲーション設定
 ├── hooks/                       # カスタムフック
-│   └── useUserSettings.ts       # ユーザー設定管理
+│   ├── useUserSettings.ts       # ユーザー設定管理
+│   └── useKanjiData.ts          # 漢字データ管理フック
+├── services/
+│   └── kanjiService.ts          # 漢字データアクセス層
+├── data/
+│   └── kanji-data.json          # 漢字データ（28文字分）
 └── types/                       # 型定義
-    └── settings.ts              # 設定関連型
+    ├── settings.ts              # 設定関連型
+    ├── kanji.ts                 # 漢字関連型定義
+    └── navigation.ts            # ナビゲーション型
 ```
 
-## 主要機能
+## 機能一覧
 1. **漢検マスターモード**: 投稿内の漢字を配当級別に色分け表示
    - 漢検配当内漢字（10級〜1級）のフィルタ機能
    - 配当外漢字（JIS第1〜第4水準）の独立表示制御
@@ -82,7 +89,7 @@ src/
 - **定数の一貫使用**: 文字列リテラルではなく、必ずconstantsフォルダで定義した定数を使用する
 - **computed property names**: オブジェクトのキーに定数を使用する際は `[CONSTANT]: value` 形式を使用
 
-## 漢字マスターモード仕様
+## 漢検マスターモード仕様
 ### 漢字分類体系
 1. **漢検配当内漢字** (メイン機能)
    - 10級、9級、8級、7級、6級、5級、4級、3級、準2級、2級、準1級、1級
@@ -159,6 +166,9 @@ src/
 - **責務分離**: 各ディレクトリの役割を明確に分離
 - **型安全**: TypeScriptの厳密な型定義を活用
 - **再利用性**: カスタムフックとユーティリティ関数で共通化
+- **コメント規約**: 
+  - 関数・インターface・型の説明: `/** */` 形式
+  - 変数・定数・一行コメント: `//` 形式
 
 ## 漢字データ管理システム仕様
 
