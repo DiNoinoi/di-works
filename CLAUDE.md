@@ -28,28 +28,40 @@ npm run lint
 npm run preview
 ```
 
-## プロジェクト構造
+## 現在のプロジェクト構造
 ```
 src/
 ├── App.tsx                      # メインアプリケーション
 ├── main.tsx                     # エントリーポイント
 ├── index.css                    # グローバルスタイル
-└── components/
-    ├── KanjiMasterMode.tsx      # 漢検マスターモード設定
-    ├── KanjiProcessor.tsx       # 漢字処理・表示コンポーネント
-    ├── PostCreation.tsx         # 投稿作成
-    ├── PostDetail.tsx           # 投稿詳細
-    ├── Settings.tsx             # 設定画面
-    ├── UserDictionary.tsx       # ユーザー辞書
-    ├── UserProfile.tsx          # プロフィール
-    ├── WeakKanjiList.tsx        # 苦手漢字リスト
-    ├── figma/
-    │   └── ImageWithFallback.tsx
-    └── ui/                      # UIコンポーネント（shadcn/ui）
-        ├── button.tsx
-        ├── card.tsx
-        ├── badge.tsx
-        └── ... (その他多数)
+├── components/
+│   ├── layout/                  # レイアウトコンポーネント
+│   │   └── Header.tsx           # ヘッダー
+│   ├── figma/
+│   │   └── ImageWithFallback.tsx
+│   ├── ui/                      # UIコンポーネント（shadcn/ui）
+│   │   ├── button.tsx
+│   │   ├── card.tsx
+│   │   ├── badge.tsx
+│   │   └── ... (その他多数)
+│   ├── KanjiMasterMode.tsx      # 漢検マスターモード設定
+│   ├── KanjiProcessor.tsx       # 漢字処理・表示コンポーネント
+│   ├── PostCreation.tsx         # 投稿作成
+│   ├── PostDetail.tsx           # 投稿詳細
+│   ├── Settings.tsx             # 設定画面
+│   ├── UserDictionary.tsx       # ユーザー辞書
+│   ├── UserProfile.tsx          # プロフィール
+│   └── WeakKanjiList.tsx        # 苦手漢字リスト
+├── constants/                   # 定数・設定
+│   ├── colors.ts                # 色定義
+│   ├── kanjiLevels.ts           # 漢字級定義
+│   ├── filterModes.ts           # フィルタモード
+│   ├── jisLevels.ts             # JIS水準定義
+│   └── navigation.ts            # ナビゲーション設定
+├── hooks/                       # カスタムフック
+│   └── useUserSettings.ts       # ユーザー設定管理
+└── types/                       # 型定義
+    └── settings.ts              # 設定関連型
 ```
 
 ## 主要機能
@@ -123,102 +135,58 @@ src/
 
 ## 設計方針・アーキテクチャ
 
-### 採用アプローチ: Feature-Based + React Standard Architecture
-React エコシステムのベストプラクティスに準拠した、分かりやすく実用的な構造を採用。
+### 採用アプローチ: React Standard Architecture
+React エコシステムのベストプラクティスに準拠した、シンプルで実用的な構造を採用。
 
-### 目標構造
+### 今後の拡張方針
 ```
 src/
-├── components/                      # UIコンポーネント
-│   ├── ui/                         # Design System (shadcn/ui)
+├── components/
 │   ├── layout/                     # レイアウトコンポーネント
-│   │   ├── AppLayout.tsx          # メインレイアウト
-│   │   ├── Header.tsx             # ヘッダー
-│   │   └── Navigation.tsx         # ナビゲーション
-│   └── features/                  # 機能別コンポーネント
-│       ├── posts/                 # 投稿機能
-│       ├── kanji/                 # 漢字機能
-│       ├── profile/               # プロフィール機能
-│       ├── dictionary/            # 辞書機能
-│       └── settings/              # 設定機能
-├── hooks/                         # カスタムフック（状態・ロジックの再利用）
-│   ├── useUserSettings.ts         # ユーザー設定管理
-│   ├── usePosts.ts                # 投稿データ管理
-│   ├── useAuth.ts                 # 認証管理
-│   └── useKanjiData.ts            # 漢字データ管理
-├── services/                      # ビジネスロジック・API処理
-│   ├── api/                       # API呼び出し
-│   │   ├── client.ts              # APIクライアント設定
-│   │   ├── posts.ts               # 投稿API
-│   │   ├── users.ts               # ユーザーAPI
-│   │   └── auth.ts                # 認証API
-│   ├── auth.ts                    # 認証サービス
-│   ├── posts.ts                   # 投稿処理ロジック
-│   └── storage.ts                 # ローカルストレージ管理
-├── types/                         # 型定義
-│   ├── api.ts                     # API関連型
-│   ├── post.ts                    # 投稿型
-│   ├── user.ts                    # ユーザー型
-│   └── kanji.ts                   # 漢字型
-├── constants/                     # 定数・設定
-│   ├── kanjiData.ts               # 漢字データ
-│   ├── colors.ts                  # 色定義
-│   ├── config.ts                  # アプリ設定
-│   └── navigation.ts              # ナビゲーション設定
-├── utils/                         # ユーティリティ関数
-│   ├── kanji.ts                   # 漢字処理
-│   ├── validation.ts              # バリデーション
-│   ├── format.ts                  # フォーマット処理
-│   └── error.ts                   # エラーハンドリング
-├── lib/                           # 外部ライブラリ設定
-│   ├── api-client.ts              # APIクライアント初期化
-│   └── storage.ts                 # ストレージ初期化
-└── data/                          # モックデータ（開発用）
-    ├── mock-posts.ts              # 投稿モックデータ
-    └── mock-users.ts              # ユーザーモックデータ
+│   ├── ui/                         # Design System (shadcn/ui)
+│   └── [機能コンポーネント]         # 各種機能コンポーネント
+├── hooks/                          # カスタムフック（状態・ロジック管理）
+├── services/                       # ビジネスロジック・API処理
+├── types/                          # 型定義
+├── constants/                      # 定数・設定
+├── utils/                          # ユーティリティ関数
+├── lib/                            # 外部ライブラリ設定
+└── data/                           # データファイル（JSON等）
 ```
 
-### 現在の構造上の課題
-1. **App.tsx の責務過多** (406行) - ルーティング、状態管理、UI描画、モックデータを全て担当
-2. **データ重複** - kanjiData、levelColors が3箇所で重複定義
-3. **設定の分散管理** - ユーザー設定が複数コンポーネントに分散
-4. **型定義の分散** - Post、Comment等の型がコンポーネント内に散在
+### 実装原則
+- **関数ベース**: Classではなく関数とカスタムフックを優先
+- **責務分離**: 各ディレクトリの役割を明確に分離
+- **型安全**: TypeScriptの厳密な型定義を活用
+- **再利用性**: カスタムフックとユーティリティ関数で共通化
 
-### 段階的リファクタリング計画
+## 漢字データ管理システム仕様
 
-#### Phase 1: 基盤整備 (優先度：高)
-1. **データ一元化**
-   - `constants/kanjiData.ts` - 漢字データ統合
-   - `constants/colors.ts` - 色定義統合
-   - `constants/navigation.ts` - ナビゲーション設定
+### データ構造
+- **6000文字の漢字データ**をJSONファイルで管理
+- **Unicode文字コード**をキーとした効率的な検索
+- **表内読み/表外読み**の区別による詳細な読み情報
+- **JIS水準**による配当外漢字の分類
 
-2. **設定統一**
-   - `hooks/useUserSettings.ts` - ユーザー設定の一元管理
+### キャッシュ戦略：シンプルプリロード + メモリキャッシュ方式
 
-#### Phase 2: 構造分離 (優先度：中)
-1. **レイアウト分離**
-   - `components/layout/AppLayout.tsx` - App.tsx からレイアウト分離
-   
-2. **フィード分離**
-   - `components/features/posts/PostFeed.tsx` - App.tsx から投稿フィード分離
+#### 採用アプローチ
+**メモリキャッシュ + バックグラウンドプリロード**の組み合わせでシンプルかつ高速な処理を実現。
 
-#### Phase 3: 型安全性向上 (優先度：中)
-1. **型定義統一**
-   - `types/post.ts`, `user.ts`, `kanji.ts` - 型定義の一元化
+#### 処理フロー
+1. **アプリ起動時**: バックグラウンドで6000文字分のJSONデータをプリロード開始（50ms）
+2. **漢字マスターモード有効化時**:
+   - **プリロード完了済み**: 即座にカラー表示
+   - **プリロード未完了**: 普通テキスト表示 → 50ms後自動的にカラー表示切替
+3. **2回目以降**: メモリキャッシュから即座取得（0.1ms/文字）
 
-#### Phase 4: ロジック分離 (優先度：中)
-1. **カスタムフック作成**
-   - `hooks/usePosts.ts`, `useAuth.ts` - 状態・ロジックの再利用
+#### 設計方針
+- **UI制御なし**: ローディング表示、プログレスバー、段階的表示は実装しない
+- **自然な切り替え**: 通常テキスト → カラーテキストのシンプルな変化のみ
+- **高速性重視**: 50ms（人間にとって一瞬）の待機時間は許容範囲内
+- **メモリキャッシュのみ**: 永続化は不要、リロード時は再取得で十分高速
 
-#### Phase 5: API準備 (将来対応)
-1. **API層準備**
-   - `services/api/` - API連携基盤の構築
-   - `services/` - ビジネスロジック層の整備
-
-### 期待される改善効果
-- **App.tsx**: 406行 → 50行 (88%削減)
-- **データ重複**: 100%解消
-- **設定管理**: 一元化による一貫性向上
-- **型安全性**: 大幅向上
-- **テスタビリティ**: ビジネスロジック分離により向上
-- **保守性**: 責務分離による変更影響範囲の限定
+#### 実装上の注意
+- シングルトンパターンでインスタンス管理
+- エラー時のフォールバック機能（プリロード失敗時は遅延ロード）
+- メモリ効率を考慮した段階的キャッシュ保存

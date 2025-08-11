@@ -8,7 +8,7 @@ export const NAVIGATION_IDS = {
   FEED: 'feed',
   SEARCH: 'search',
   CREATE: 'create',
-  KANJI_MASTER: 'kanji-master',
+  KANKEN_MASTER: 'kanken-master',
   DICTIONARY: 'dictionary',
   WEAK_KANJI: 'weak-kanji',
   NOTIFICATIONS: 'notifications',
@@ -25,7 +25,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   { id: NAVIGATION_IDS.FEED, label: 'ホーム', icon: Home },
   { id: NAVIGATION_IDS.SEARCH, label: '検索', icon: Search },
   { id: NAVIGATION_IDS.CREATE, label: '投稿作成', icon: PlusCircle },
-  { id: NAVIGATION_IDS.KANJI_MASTER, label: '漢字マスター', icon: Eye },
+  { id: NAVIGATION_IDS.KANKEN_MASTER, label: '漢検マスター', icon: Eye },
   { id: NAVIGATION_IDS.DICTIONARY, label: '辞書', icon: BookOpen },
   { id: NAVIGATION_IDS.WEAK_KANJI, label: '苦手漢字', icon: AlertTriangle },
   { id: NAVIGATION_IDS.NOTIFICATIONS, label: '通知', icon: Bell },
@@ -40,7 +40,7 @@ export const DESKTOP_NAV_IDS = [
   NAVIGATION_IDS.FEED, 
   NAVIGATION_IDS.SEARCH, 
   NAVIGATION_IDS.CREATE, 
-  NAVIGATION_IDS.KANJI_MASTER, 
+  NAVIGATION_IDS.KANKEN_MASTER, 
   NAVIGATION_IDS.DICTIONARY
 ];
 

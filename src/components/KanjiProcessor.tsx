@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { Badge } from './ui/badge';
-import { getKanjiInfo } from '../constants/kanjiData';
-import { LEVEL_COLORS } from '../constants/colors';
-import { isKanjiCharacter } from '../utils/kanjiUtils';
-import type { KanjiInfo } from '../types/kanji';
+import { getLevelColor } from '../constants/colors';
+import { useKanjiData } from '../hooks/useKanjiData';
+import type { KanjiInfo, ProcessedChar } from '../types/kanji';
 import type { FilterMode, UnassignedJISLevel } from '../types/settings';
-import { KANJI_LEVELS } from '../constants/kanjiLevels';
+import { OFFICIAL_KANJI_LEVELS, LEVEL_UNASSIGNED } from '../constants/kanjiLevels';
 import { FILTER_MODES } from '../constants/filterModes';
 import { JIS_LEVELS, JIS_LEVEL_4 } from '../constants/jisLevels';
 
@@ -29,10 +28,15 @@ const KanjiChar: React.FC<KanjiCharProps> = ({ char, data, isHighlighted }) => {
     return <span>{char}</span>;
   }
 
+  // 読み情報を表内読み・表外読みで統合
+  const allOnYomi = [...data.onYomi.hyonai, ...data.onYomi.hyogai];
+  const allKunYomi = [...data.kunYomi.hyonai, ...data.kunYomi.hyogai];
+  const readingText = [...allOnYomi, ...allKunYomi].join('・') || '不明';
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <span className={`px-1 rounded ${LEVEL_COLORS[data.level]} cursor-pointer transition-all hover:shadow-sm`}>
+        <span className={`px-1 rounded ${data.level === LEVEL_UNASSIGNED ? getLevelColor(data.jisLevel) : getLevelColor(data.level)} cursor-pointer transition-all hover:shadow-sm`}>
           {char}
         </span>
       </TooltipTrigger>
@@ -45,8 +49,8 @@ const KanjiChar: React.FC<KanjiCharProps> = ({ char, data, isHighlighted }) => {
             </Badge>
           </div>
           <div className="text-sm">
-            <div><strong>読み:</strong> {data.reading}</div>
-            <div><strong>意味:</strong> {data.meaning}</div>
+            <div><strong>読み:</strong> {readingText}</div>
+            <div><strong>意味:</strong> {data.meanings.join('、')}</div>
           </div>
         </div>
       </TooltipContent>
@@ -71,25 +75,28 @@ interface KanjiProcessorProps {
  * 漢字処理メインコンポーネント
  * テキスト内の漢字を検出し、漢検マスターモード設定に応じて色分け表示する
  */
-export function KanjiProcessor({ 
-  text, 
-  userLevel = '準1級', 
-  filterMode = FILTER_MODES.ALL, 
+export function KanjiProcessor({
+  text,
+  userLevel = '準1級',
+  filterMode = FILTER_MODES.ALL,
   showMode = true,
   showUnassigned = false,
   unassignedJisLevel = JIS_LEVEL_4,
   className = ''
 }: KanjiProcessorProps) {
+  const { processText: processKanjiText } = useKanjiData();
+  const [processedChars, setProcessedChars] = useState<ProcessedChar[]>([]);
+
   // ユーザーの保持級のインデックスを取得（級の序列判定に使用）
-  const userLevelIndex = KANJI_LEVELS.indexOf(userLevel as typeof KANJI_LEVELS[number]);
+  const userLevelIndex = OFFICIAL_KANJI_LEVELS.indexOf(userLevel as typeof OFFICIAL_KANJI_LEVELS[number]);
 
   /**
-   * 配当外漢字（JIS水準）かどうかを判定
+   * 配当外漢字かどうかを判定
    * @param level - 漢字のレベル
    * @returns 配当外漢字かどうか
    */
   const isUnassignedKanji = (level: string): boolean => {
-    return JIS_LEVELS.includes(level as UnassignedJISLevel);
+    return level === LEVEL_UNASSIGNED;
   };
 
   /**
@@ -106,26 +113,26 @@ export function KanjiProcessor({
 
   /**
    * 漢字をハイライト表示するかどうかを判定
-   * @param kanjiLevel - 漢字の配当級またはJIS水準
+   * @param info - 漢字情報オブジェクト
    * @returns ハイライト表示するかどうか
    */
-  const shouldHighlight = (kanjiLevel: string): boolean => {
+  const shouldHighlight = (info: KanjiInfo): boolean => {
     // 漢検マスターモードが無効な場合はハイライトしない
     if (!showMode) return false;
-    
+
     // 配当外漢字の場合は独立した判定
-    if (isUnassignedKanji(kanjiLevel)) {
-      return showUnassigned && shouldShowUnassignedJIS(kanjiLevel);
+    if (isUnassignedKanji(info.level)) {
+      return showUnassigned && shouldShowUnassignedJIS(info.jisLevel);
     }
-    
+
     // 漢検配当内漢字の場合
     // 「すべて表示」モードの場合は常にハイライト
     if (filterMode === FILTER_MODES.ALL) return true;
-    
-    const kanjiLevelIndex = KANJI_LEVELS.indexOf(kanjiLevel as typeof KANJI_LEVELS[number]);
+
+    const kanjiLevelIndex = OFFICIAL_KANJI_LEVELS.indexOf(info.level as typeof OFFICIAL_KANJI_LEVELS[number]);
     // 想定外のレベルの場合は非表示
     if (kanjiLevelIndex === -1) return false;
-    
+
     if (filterMode === FILTER_MODES.ABOVE) {
       // 保持級以上（より難しい級）の漢字を表示
       return kanjiLevelIndex <= userLevelIndex;
@@ -137,28 +144,36 @@ export function KanjiProcessor({
     }
   };
 
+  // テキストが変更されたときに非同期で漢字データを処理
+  useEffect(() => {
+    const processTextAsync = async () => {
+      const chars = await processKanjiText(text);
+      setProcessedChars(chars);
+    };
+    
+    processTextAsync();
+  }, [text, processKanjiText]);
+
   /**
-   * テキストを文字単位で処理し、漢字に対して適切な表示コンポーネントを返す
-   * @param text - 処理対象のテキスト
-   * @returns JSX要素の配列
+   * 処理済み文字データからJSX要素を生成
    */
-  const processText = (text: string) => {
-    return text.split('').map((char, index) => {
+  const renderProcessedText = () => {
+    return processedChars.map((charData, index) => {
+      const { char, info } = charData;
+      
       // 漢字以外の文字は通常のspanで表示
-      if (!isKanjiCharacter(char)) {
+      if (!info) {
         return <span key={index}>{char}</span>;
       }
       
-      // 漢字の詳細情報を取得
-      const data = getKanjiInfo(char);
       // ハイライト対象かどうか判定
-      const isHighlighted = data ? shouldHighlight(data.level) : false;
+      const isHighlighted = shouldHighlight(info);
       
       return (
         <KanjiChar
           key={index}
           char={char}
-          data={data}
+          data={info}
           isHighlighted={isHighlighted}
         />
       );
@@ -168,7 +183,7 @@ export function KanjiProcessor({
   return (
     <TooltipProvider>
       <span className={className}>
-        {processText(text)}
+        {renderProcessedText()}
       </span>
     </TooltipProvider>
   );

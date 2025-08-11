@@ -1,0 +1,452 @@
+{
+  "0x6F22": {
+    "character": "漢",
+    "level": "3級",
+    "onYomi": {
+      "hyonai": ["カン"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": [],
+      "hyogai": []
+    },
+    "meanings": ["中国", "男性"],
+    "examples": ["漢字", "漢検"],
+    "jisLevel": "JIS1"
+  },
+  "0x5B57": {
+    "character": "字",
+    "level": "6級",
+    "onYomi": {
+      "hyonai": ["ジ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["あざ"],
+      "hyogai": []
+    },
+    "meanings": ["文字", "学問"],
+    "examples": ["文字", "字体"],
+    "jisLevel": "JIS1"
+  },
+  "0x691C": {
+    "character": "検",
+    "level": "4級",
+    "onYomi": {
+      "hyonai": ["ケン"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": [],
+      "hyogai": []
+    },
+    "meanings": ["調べる", "取り調べ"],
+    "examples": ["検査", "漢検"],
+    "jisLevel": "JIS1"
+  },
+  "0x5B9A": {
+    "character": "定",
+    "level": "4級",
+    "onYomi": {
+      "hyonai": ["テイ", "ジョウ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["さだ"],
+      "hyogai": []
+    },
+    "meanings": ["決める", "安定"],
+    "examples": ["決定", "定義"],
+    "jisLevel": "JIS1"
+  },
+  "0x6E96": {
+    "character": "準",
+    "level": "2級",
+    "onYomi": {
+      "hyonai": ["ジュン"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": [],
+      "hyogai": []
+    },
+    "meanings": ["準じる", "基準"],
+    "examples": ["準備", "基準"],
+    "jisLevel": "JIS1"
+  },
+  "0x4E00": {
+    "character": "一",
+    "level": "10級",
+    "onYomi": {
+      "hyonai": ["イチ", "イツ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["ひと"],
+      "hyogai": []
+    },
+    "meanings": ["数の1", "一つ"],
+    "examples": ["一人", "一級"],
+    "jisLevel": "JIS1"
+  },
+  "0x7D1A": {
+    "character": "級",
+    "level": "3級",
+    "onYomi": {
+      "hyonai": ["キュウ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": [],
+      "hyogai": []
+    },
+    "meanings": ["等級", "階級"],
+    "examples": ["一級", "三級"],
+    "jisLevel": "JIS1"
+  },
+  "0x5408": {
+    "character": "合",
+    "level": "2級",
+    "onYomi": {
+      "hyonai": ["ゴウ", "ガッ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["あ"],
+      "hyogai": []
+    },
+    "meanings": ["合わせる", "適合"],
+    "examples": ["合格", "統合"],
+    "jisLevel": "JIS1"
+  },
+  "0x683C": {
+    "character": "格",
+    "level": "5級",
+    "onYomi": {
+      "hyonai": ["カク"],
+      "hyogai": ["コウ"]
+    },
+    "kunYomi": {
+      "hyonai": [],
+      "hyogai": []
+    },
+    "meanings": ["格式", "資格"],
+    "examples": ["合格", "格式"],
+    "jisLevel": "JIS1"
+  },
+  "0x76EE": {
+    "character": "目",
+    "level": "9級",
+    "onYomi": {
+      "hyonai": ["モク", "ボク"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["め"],
+      "hyogai": []
+    },
+    "meanings": ["目", "視覚器官"],
+    "examples": ["目標", "一目"],
+    "jisLevel": "JIS1"
+  },
+  "0x6307": {
+    "character": "指",
+    "level": "3級",
+    "onYomi": {
+      "hyonai": ["シ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["ゆび", "さ"],
+      "hyogai": []
+    },
+    "meanings": ["指", "指示する"],
+    "examples": ["指導", "目指"],
+    "jisLevel": "JIS1"
+  },
+  "0x52C9": {
+    "character": "勉",
+    "level": "3級",
+    "onYomi": {
+      "hyonai": ["ベン"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": [],
+      "hyogai": []
+    },
+    "meanings": ["勉める", "努力"],
+    "examples": ["勉強", "勉励"],
+    "jisLevel": "JIS1"
+  },
+  "0x5F37": {
+    "character": "強",
+    "level": "2級",
+    "onYomi": {
+      "hyonai": ["キョウ", "ゴウ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["つよ", "し"],
+      "hyogai": []
+    },
+    "meanings": ["強い", "無理に"],
+    "examples": ["強化", "勉強"],
+    "jisLevel": "JIS1"
+  },
+  "0x4E2D": {
+    "character": "中",
+    "level": "10級",
+    "onYomi": {
+      "hyonai": ["チュウ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["なか", "うち"],
+      "hyogai": []
+    },
+    "meanings": ["中央", "途中"],
+    "examples": ["中心", "勉強中"],
+    "jisLevel": "JIS1"
+  },
+  "0x6E9F": {
+    "character": "瀟",
+    "level": "1級",
+    "onYomi": {
+      "hyonai": ["ショウ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": [],
+      "hyogai": []
+    },
+    "meanings": ["すっきりした", "清らか"],
+    "examples": ["瀟洒"],
+    "jisLevel": "JIS1"
+  },
+  "0x6D12": {
+    "character": "洒",
+    "level": "1級",
+    "onYomi": {
+      "hyonai": ["シャ"],
+      "hyogai": ["サイ"]
+    },
+    "kunYomi": {
+      "hyonai": [],
+      "hyogai": ["あら"]
+    },
+    "meanings": ["あっさりした", "上品"],
+    "examples": ["瀟洒", "洒脱"],
+    "jisLevel": "JIS1"
+  },
+  "0x61C2": {
+    "character": "憂",
+    "level": "準1級",
+    "onYomi": {
+      "hyonai": ["ユウ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["うれ", "うい"],
+      "hyogai": []
+    },
+    "meanings": ["心配", "憂える"],
+    "examples": ["憂鬱", "憂国"],
+    "jisLevel": "JIS1"
+  },
+  "0x4E16": {
+    "character": "世",
+    "level": "3級",
+    "onYomi": {
+      "hyonai": ["セイ", "セ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["よ"],
+      "hyogai": []
+    },
+    "meanings": ["世の中", "時代"],
+    "examples": ["世界", "憂き世"],
+    "jisLevel": "JIS1"
+  },
+  "0x7F8E": {
+    "character": "美",
+    "level": "3級",
+    "onYomi": {
+      "hyonai": ["ビ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["うつく"],
+      "hyogai": []
+    },
+    "meanings": ["美しい", "良い"],
+    "examples": ["美人", "美術"],
+    "jisLevel": "JIS1"
+  },
+  "0x611F": {
+    "character": "感",
+    "level": "3級",
+    "onYomi": {
+      "hyonai": ["カン"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": [],
+      "hyogai": []
+    },
+    "meanings": ["感じる", "印象"],
+    "examples": ["感動", "感謝"],
+    "jisLevel": "JIS1"
+  },
+  "0x52D5": {
+    "character": "動",
+    "level": "3級",
+    "onYomi": {
+      "hyonai": ["ドウ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["うご"],
+      "hyogai": []
+    },
+    "meanings": ["動く", "変化"],
+    "examples": ["感動", "動作"],
+    "jisLevel": "JIS1"
+  },
+  "0x4ECA": {
+    "character": "今",
+    "level": "8級",
+    "onYomi": {
+      "hyonai": ["コン", "キン"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["いま"],
+      "hyogai": []
+    },
+    "meanings": ["現在", "今"],
+    "examples": ["今日", "今回"],
+    "jisLevel": "JIS1"
+  },
+  "0x65E5": {
+    "character": "日",
+    "level": "9級",
+    "onYomi": {
+      "hyonai": ["ニチ", "ジツ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["ひ", "か"],
+      "hyogai": []
+    },
+    "meanings": ["太陽", "日"],
+    "examples": ["今日", "日本"],
+    "jisLevel": "JIS1"
+  },
+  "0x51FA": {
+    "character": "出",
+    "level": "8級",
+    "onYomi": {
+      "hyonai": ["シュツ", "スイ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["で", "だ"],
+      "hyogai": []
+    },
+    "meanings": ["出る", "外に向かう"],
+    "examples": ["出題", "出会"],
+    "jisLevel": "JIS1"
+  },
+  "0x4F1A": {
+    "character": "会",
+    "level": "4級",
+    "onYomi": {
+      "hyonai": ["カイ", "エ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": ["あ"],
+      "hyogai": []
+    },
+    "meanings": ["会う", "集まり"],
+    "examples": ["出会", "会議"],
+    "jisLevel": "JIS1"
+  },
+  "0x6822": {
+    "character": "栢",
+    "level": "配当外",
+    "onYomi": {
+      "hyonai": [],
+      "hyogai": ["ハク", "ヒャク"]
+    },
+    "kunYomi": {
+      "hyonai": [],
+      "hyogai": ["かしわ"]
+    },
+    "meanings": ["柏", "常緑樹"],
+    "examples": ["栢森"],
+    "jisLevel": "JIS1"
+  },
+  "0x7895": {
+    "character": "碕",
+    "level": "配当外",
+    "onYomi": {
+      "hyonai": [],
+      "hyogai": ["キ"]
+    },
+    "kunYomi": {
+      "hyonai": [],
+      "hyogai": ["さき", "みさき"]
+    },
+    "meanings": ["岬", "突き出た土地"],
+    "examples": ["碕ヶ崎"],
+    "jisLevel": "JIS2"
+  },
+  "0x549B": {
+    "character": "咋",
+    "level": "配当外",
+    "onYomi": {
+      "hyonai": [],
+      "hyogai": ["サク"]
+    },
+    "kunYomi": {
+      "hyonai": [],
+      "hyogai": ["か"]
+    },
+    "meanings": ["かじる", "昨日"],
+    "examples": ["咋日"],
+    "jisLevel": "JIS1"
+  },
+  "0x66D6": {
+    "character": "曖",
+    "level": "準1級",
+    "onYomi": {
+      "hyonai": ["アイ"],
+      "hyogai": []
+    },
+    "kunYomi": {
+      "hyonai": [],
+      "hyogai": []
+    },
+    "meanings": ["はっきりしない", "あいまい"],
+    "examples": ["曖昧"],
+    "jisLevel": "JIS1"
+  },
+  "0x6627": {
+    "character": "昧",
+    "level": "準1級",
+    "onYomi": {
+      "hyonai": ["マイ"],
+      "hyogai": ["バイ"]
+    },
+    "kunYomi": {
+      "hyonai": [],
+      "hyogai": []
+    },
+    "meanings": ["はっきりしない", "暗い"],
+    "examples": ["曖昧"],
+    "jisLevel": "JIS1"
+  }
+}

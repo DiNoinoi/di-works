@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { PostCreation } from './components/PostCreation';
 import { UserProfile } from './components/UserProfile';
-import { KanjiMasterMode } from './components/KanjiMasterMode';
+import { KankenMasterMode } from './components/KankenMasterMode';
 import { UserDictionary } from './components/UserDictionary';
 import { Settings } from './components/Settings';
 import { WeakKanjiList } from './components/WeakKanjiList';
@@ -22,6 +22,7 @@ import { OFFICIAL_KANJI_LEVELS } from './constants/kanjiLevels';
 import { FILTER_MODES } from './constants/filterModes';
 import { JIS_LEVELS, JIS_LEVEL_LABELS } from './constants/jisLevels';
 import { useUserSettings } from './hooks/useUserSettings';
+import { useKanjiData } from './hooks/useKanjiData';
 import type { FilterMode, UnassignedJISLevel } from './types/settings';
 
 /**
@@ -30,6 +31,9 @@ import type { FilterMode, UnassignedJISLevel } from './types/settings';
  */
 function App() {
   const [currentView, setCurrentView] = useState<string>(NAVIGATION_IDS.FEED);
+  
+  // 漢字データプリロード（アプリ起動時に自動開始）
+  useKanjiData();
   
   // 統合されたユーザー設定管理hook
   const {
@@ -46,7 +50,7 @@ function App() {
     { id: NAVIGATION_IDS.FEED, label: 'ホーム', icon: Home },
     { id: NAVIGATION_IDS.SEARCH, label: '検索', icon: Search },
     { id: NAVIGATION_IDS.CREATE, label: '投稿作成', icon: PlusCircle },
-    { id: NAVIGATION_IDS.KANJI_MASTER, label: '漢字マスター', icon: Eye },
+    { id: NAVIGATION_IDS.KANKEN_MASTER, label: '漢検マスター', icon: Eye },
     { id: NAVIGATION_IDS.DICTIONARY, label: '辞書', icon: BookOpen },
     { id: NAVIGATION_IDS.WEAK_KANJI, label: '苦手漢字', icon: AlertTriangle },
     { id: NAVIGATION_IDS.NOTIFICATIONS, label: '通知', icon: Bell },
@@ -142,7 +146,7 @@ function App() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setCurrentView(NAVIGATION_IDS.KANJI_MASTER)}
+                onClick={() => setCurrentView(NAVIGATION_IDS.KANKEN_MASTER)}
                 className="flex items-center gap-2"
               >
                 <SettingsIcon className="w-4 h-4" />
@@ -342,8 +346,8 @@ function App() {
         return <PostCreation />;
       case NAVIGATION_IDS.PROFILE:
         return <UserProfile />;
-      case NAVIGATION_IDS.KANJI_MASTER:
-        return <KanjiMasterMode 
+      case NAVIGATION_IDS.KANKEN_MASTER:
+        return <KankenMasterMode 
           onSettingsChange={updateMasterModeSettings}
           currentSettings={masterModeSettings}
         />;
