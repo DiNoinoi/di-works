@@ -1,9 +1,8 @@
-import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
-import { Award, BookOpen, Trophy, Star, Users, Calendar } from 'lucide-react';
+import { Award, BookOpen, Trophy, Star, Calendar } from 'lucide-react';
 
 const kankenLevels = [
   { level: '1級', color: 'bg-purple-600', passed: 3 },
@@ -14,45 +13,45 @@ const kankenLevels = [
 ];
 
 const certifiedQuizzes = [
-  { 
-    id: 1, 
-    name: '四字熟語マスター', 
-    icon: '四', 
+  {
+    id: 1,
+    name: '四字熟語マスター',
+    icon: '四',
     description: '四字熟語に関する10問のクイズで全問正解を達成',
     dateEarned: '2024年3月15日'
   },
-  { 
-    id: 2, 
-    name: '読み名人', 
-    icon: '読', 
+  {
+    id: 2,
+    name: '読み名人',
+    icon: '読',
     description: '難読漢字の読み問題で連続20問正解を達成',
     dateEarned: '2024年2月28日'
   },
-  { 
-    id: 3, 
-    name: '対義語達人', 
-    icon: '対', 
+  {
+    id: 3,
+    name: '対義語達人',
+    icon: '対',
     description: '対義語問題で正答率90%以上を維持',
     dateEarned: '2024年1月10日'
   },
-  { 
-    id: 4, 
-    name: '漢検博士', 
-    icon: '博', 
+  {
+    id: 4,
+    name: '漢検博士',
+    icon: '博',
     description: '漢検1級レベルの問題を50問以上作成',
     dateEarned: '2024年4月5日'
   },
-  { 
-    id: 5, 
-    name: '熟語創造者', 
-    icon: '創', 
+  {
+    id: 5,
+    name: '熟語創造者',
+    icon: '創',
     description: 'オリジナル熟語問題を100問以上投稿',
     dateEarned: '2024年3月20日'
   },
-  { 
-    id: 6, 
-    name: '継続学習者', 
-    icon: '継', 
+  {
+    id: 6,
+    name: '継続学習者',
+    icon: '継',
     description: '30日連続でクイズに参加',
     dateEarned: '2024年2月14日'
   }
@@ -87,12 +86,12 @@ export function UserProfile() {
                   <AvatarImage src={userData.profileImage} alt={userData.name} />
                   <AvatarFallback className="text-2xl">{userData.name[0]}</AvatarFallback>
                 </Avatar>
-                
+
                 {/* 最高級バッジ */}
                 {highestLevel && (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge 
+                      <Badge
                         className={`mt-3 ${highestLevel.color} text-white px-3 py-1 text-lg font-bold`}
                       >
                         <Award className="w-4 h-4 mr-1" />
@@ -106,21 +105,21 @@ export function UserProfile() {
                   </Tooltip>
                 )}
               </div>
-              
+
               <div className="flex-1 space-y-4">
                 <div>
                   <h1 className="text-2xl font-bold">{userData.name}</h1>
                   <p className="text-gray-600">{userData.username}</p>
                   <p className="mt-2 text-gray-700">{userData.bio}</p>
                 </div>
-                
+
                 <div className="flex items-center gap-4 text-sm text-gray-600">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
                     {userData.joinDate}加入
                   </span>
                 </div>
-                
+
                 <div className="flex gap-6 text-sm">
                   <span><strong>{userData.stats.postsCount}</strong> 投稿</span>
                   <span><strong>{userData.stats.followers.toLocaleString()}</strong> フォロワー</span>
@@ -145,11 +144,10 @@ export function UserProfile() {
               {kankenLevels.map((level) => (
                 <Tooltip key={level.level}>
                   <TooltipTrigger asChild>
-                    <div className={`relative p-4 rounded-lg border-2 transition-all cursor-pointer ${
-                      level.passed > 0 
-                        ? `${level.color} text-white border-transparent shadow-md` 
+                    <div className={`relative p-4 rounded-lg border-2 transition-all cursor-pointer ${level.passed > 0
+                        ? `${level.color} text-white border-transparent shadow-md`
                         : 'bg-gray-100 text-gray-400 border-gray-300'
-                    }`}>
+                      }`}>
                       <div className="text-center">
                         <div className="font-bold text-lg">{level.level}</div>
                         {level.passed > 0 && (

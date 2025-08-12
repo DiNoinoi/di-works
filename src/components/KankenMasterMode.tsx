@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
-import { Button } from './ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Switch } from './ui/switch';
 import { Label } from './ui/label';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import { TooltipProvider } from './ui/tooltip';
 import { Badge } from './ui/badge';
 import { Eye } from 'lucide-react';
 
@@ -13,12 +12,9 @@ import { OFFICIAL_KANJI_LEVELS } from '../constants/kanjiLevels';
 import { FILTER_MODES } from '../constants/filterModes';
 import { JIS_LEVELS, JIS_LEVEL_LABELS, JIS_LEVEL_4 } from '../constants/jisLevels';
 import { LEVEL_PRE1 } from '../constants/kanjiLevels';
-import { getLevelColor, LEVEL_COLORS } from '../constants/colors';
-import { useKanjiData } from '../hooks/useKanjiData';
+import { LEVEL_COLORS } from '../constants/colors';
 import { KanjiProcessor } from './KanjiProcessor';
 import type { MasterModeSettings, FilterMode, UnassignedJISLevel } from '../types/settings';
-import type { KanjiInfo } from '../types/kanji';
-import { LEVEL_UNASSIGNED } from '../constants/kanjiLevels';
 
 
 // KanjiCharコンポーネントは削除し、KanjiProcessorを使用
@@ -51,10 +47,6 @@ export function KankenMasterMode({ onSettingsChange, currentSettings }: KankenMa
     '漢字検定一級合格を目指して勉強中です。',
     '憂き世の感動を表現する漢字の美しさに心を奪われています。碕栢'
   ];
-
-  const userLevelIndex = OFFICIAL_KANJI_LEVELS.indexOf(userLevel as typeof OFFICIAL_KANJI_LEVELS[number]);
-
-  // shouldHighlightとprocessTextはKanjiProcessorに委譲
 
   return (
     <TooltipProvider>
