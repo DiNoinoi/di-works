@@ -23,6 +23,7 @@ import { FILTER_MODES } from './constants/filterModes';
 import { JIS_LEVELS, JIS_LEVEL_LABELS } from './constants/jisLevels';
 import { useUserSettings } from './hooks/useUserSettings';
 import { useKanjiData } from './hooks/useKanjiData';
+import { APP_NAME } from './constants/app';
 import type { FilterMode, UnassignedJISLevel } from './types/settings';
 
 /**
@@ -31,10 +32,10 @@ import type { FilterMode, UnassignedJISLevel } from './types/settings';
  */
 function App() {
   const [currentView, setCurrentView] = useState<string>(NAVIGATION_IDS.FEED);
-  
+
   // 漢字データプリロード（アプリ起動時に自動開始）
   useKanjiData();
-  
+
   // 統合されたユーザー設定管理hook
   const {
     masterModeEnabled,
@@ -116,10 +117,10 @@ function App() {
   const renderFeed = () => (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2">漢字SNS</h1>
-        <p className="text-gray-600">漢字を愛する人たちのコミュニティ</p>
+        <h1 className="text-3xl font-bold mb-2">{APP_NAME}</h1>
+        <p className="text-gray-600">{APP_NAME}は漢字学習をする人のコミュニティです。気軽に問題投稿をお楽しみください。</p>
       </div>
-      
+
       {/* 漢検マスターモードコントロール */}
       <Card className="w-full max-w-2xl mx-auto">
         <CardContent className="pt-4">
@@ -141,7 +142,7 @@ function App() {
                 onCheckedChange={toggleMasterMode}
               />
             </div>
-            
+
             {masterModeEnabled && (
               <Button
                 variant="outline"
@@ -154,19 +155,19 @@ function App() {
               </Button>
             )}
           </div>
-          
+
           {masterModeEnabled && (
             <div className="mt-3 p-3 bg-blue-50 rounded-lg">
               <p className="text-sm text-blue-700 mb-3">
                 投稿内の漢字が配当級別に色分け表示されます。漢字にカーソルを合わせると詳細情報が表示されます。
               </p>
-              
+
               {/* クイック設定 */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                 <div className="space-y-1">
                   <Label htmlFor="quick-level" className="text-xs text-blue-700">保持級</Label>
-                  <Select 
-                    value={masterModeSettings.userLevel} 
+                  <Select
+                    value={masterModeSettings.userLevel}
                     onValueChange={(value) => updateMasterModeSettings({ ...masterModeSettings, userLevel: value })}
                   >
                     <SelectTrigger className="h-8 text-xs bg-white">
@@ -179,11 +180,11 @@ function App() {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div className="space-y-1">
                   <Label htmlFor="quick-filter" className="text-xs text-blue-700">フィルタ</Label>
-                  <Select 
-                    value={masterModeSettings.filterMode} 
+                  <Select
+                    value={masterModeSettings.filterMode}
                     onValueChange={(value: FilterMode) => updateMasterModeSettings({ ...masterModeSettings, filterMode: value })}
                   >
                     <SelectTrigger className="h-8 text-xs bg-white">
@@ -197,7 +198,7 @@ function App() {
                   </Select>
                 </div>
               </div>
-              
+
               {/* 配当外漢字設定 */}
               <div className="border-t border-blue-200 pt-3">
                 <div className="flex items-center justify-between mb-2">
@@ -209,11 +210,11 @@ function App() {
                     className="scale-75"
                   />
                 </div>
-                
+
                 <div className="space-y-1">
                   <Label htmlFor="jis-level" className={`text-xs ${!masterModeSettings.showUnassigned ? 'text-gray-400' : 'text-blue-600'}`}>JIS水準</Label>
-                  <Select 
-                    value={masterModeSettings.unassignedJisLevel} 
+                  <Select
+                    value={masterModeSettings.unassignedJisLevel}
                     onValueChange={masterModeSettings.showUnassigned ? (value: UnassignedJISLevel) => updateUnassignedJisLevel(value) : undefined}
                   >
                     <SelectTrigger className={`h-8 text-xs bg-white ${!masterModeSettings.showUnassigned ? 'opacity-50 pointer-events-none' : ''}`}>
@@ -233,7 +234,7 @@ function App() {
           )}
         </CardContent>
       </Card>
-      
+
       {feedPosts.map((post) => (
         <Card key={post.id} className="w-full max-w-2xl mx-auto">
           <CardContent className="pt-6">
@@ -248,7 +249,7 @@ function App() {
                   <span className="text-gray-400 text-sm">·</span>
                   <span className="text-gray-400 text-sm">{post.time}</span>
                 </div>
-                
+
                 <div className="mt-2">
                   <div className="mb-3">
                     {masterModeEnabled ? (
@@ -264,7 +265,7 @@ function App() {
                       <p>{post.content}</p>
                     )}
                   </div>
-                  
+
                   {post.type === 'quiz' && post.quiz && (
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-3">
                       <div className="flex items-center gap-2 mb-2">
@@ -279,9 +280,8 @@ function App() {
                           {[...Array(5)].map((_, i) => (
                             <span
                               key={i}
-                              className={`text-xs ${
-                                i < post.quiz.rating ? 'text-yellow-400' : 'text-gray-300'
-                              }`}
+                              className={`text-xs ${i < post.quiz.rating ? 'text-yellow-400' : 'text-gray-300'
+                                }`}
                             >
                               ★
                             </span>
@@ -306,8 +306,8 @@ function App() {
                         <Button size="sm">
                           回答する
                         </Button>
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => setCurrentView(NAVIGATION_IDS.POST_DETAIL)}
                         >
@@ -317,7 +317,7 @@ function App() {
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="flex items-center gap-4 text-gray-500 text-sm">
                     <button className="flex items-center gap-1 hover:text-red-500 transition-colors">
                       <MessageCircle className="w-4 h-4" />
@@ -347,7 +347,7 @@ function App() {
       case NAVIGATION_IDS.PROFILE:
         return <UserProfile />;
       case NAVIGATION_IDS.KANKEN_MASTER:
-        return <KankenMasterMode 
+        return <KankenMasterMode
           onSettingsChange={updateMasterModeSettings}
           currentSettings={masterModeSettings}
         />;
@@ -383,7 +383,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* ヘッダー */}
-      <Header 
+      <Header
         currentView={currentView}
         onViewChange={setCurrentView}
         navigationItems={navigationItems}

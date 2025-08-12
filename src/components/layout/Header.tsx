@@ -5,6 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { User, ChevronDown, Settings as SettingsIcon } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { NAVIGATION_IDS } from '../../constants/navigation';
+import { APP_NAME } from '../../constants/app';
 
 interface HeaderProps {
   /** 現在のビュー */
@@ -46,7 +47,7 @@ export function Header({ currentView, onViewChange, navigationItems }: HeaderPro
             <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center text-white font-bold">
               漢
             </div>
-            <span className="text-xl font-bold">漢字SNS</span>
+            <span className="text-xl font-bold">{APP_NAME}</span>
           </div>
           
           <div className="flex items-center gap-4">
