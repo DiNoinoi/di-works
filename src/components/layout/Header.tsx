@@ -3,7 +3,7 @@ import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { User, ChevronDown, Settings as SettingsIcon } from 'lucide-react';
-import { useAuth } from '../../hooks/useAuth';
+// import { authService } from '../../services/api/auth';
 import { NAVIGATION_IDS } from '../../constants/navigation';
 import { APP_NAME } from '../../constants/app';
 
@@ -25,17 +25,26 @@ interface HeaderProps {
  * ロゴ、ナビゲーション、プロフィールドロップダウンを含む
  */
 export function Header({ currentView, onViewChange, navigationItems }: HeaderProps) {
-  const { user, logout, isLoading } = useAuth();
+  // 一時的にモックデータを使用
+  const user = {
+    name: '漢字太郎',
+    avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
+  };
+  const isLoading = false;
 
   /**
    * ログアウト処理
    */
   const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error('ログアウトエラー:', error);
-    }
+    // 本実装時:
+    // try {
+    //   await authService.signOut();
+    //   // 必要に応じてページリロードまたはログイン画面へリダイレクト
+    // } catch (error) {
+    //   console.error('ログアウトエラー:', error);
+    // }
+    
+    console.log('ログアウト処理（未実装）');
   };
 
   return (
