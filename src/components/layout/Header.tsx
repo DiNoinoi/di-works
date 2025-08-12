@@ -1,22 +1,19 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { User, ChevronDown, Settings as SettingsIcon } from 'lucide-react';
 // import { authService } from '../../services/api/auth';
-import { NAVIGATION_IDS } from '../../constants/navigation';
 import { APP_NAME } from '../../constants/app';
 
 interface HeaderProps {
-  /** 現在のビュー */
-  currentView: string;
-  /** ビュー変更関数 */
-  onViewChange: (viewId: string) => void;
   /** ナビゲーション項目 */
   navigationItems: Array<{
     id: string;
     label: string;
     icon: React.ComponentType<{ className?: string }>;
+    path: string;
   }>;
 }
 
@@ -24,7 +21,8 @@ interface HeaderProps {
  * アプリケーションヘッダーコンポーネント
  * ロゴ、ナビゲーション、プロフィールドロップダウンを含む
  */
-export function Header({ currentView, onViewChange, navigationItems }: HeaderProps) {
+export function Header({ navigationItems }: HeaderProps) {
+  const location = useLocation();
   // 一時的にモックデータを使用
   const user = {
     name: '漢字太郎',
@@ -64,16 +62,19 @@ export function Header({ currentView, onViewChange, navigationItems }: HeaderPro
             <nav className="hidden lg:flex items-center gap-1">
               {navigationItems.slice(0, 5).map((item) => {
                 const Icon = item.icon;
+                const isActive = location.pathname === item.path;
                 return (
                   <Button
                     key={item.id}
-                    variant={currentView === item.id ? "default" : "ghost"}
+                    variant={isActive ? "default" : "ghost"}
                     size="sm"
-                    onClick={() => onViewChange(item.id)}
+                    asChild
                     className="flex items-center gap-2"
                   >
-                    <Icon className="w-4 h-4" />
-                    {item.label}
+                    <Link to={item.path}>
+                      <Icon className="w-4 h-4" />
+                      {item.label}
+                    </Link>
                   </Button>
                 );
               })}
@@ -110,22 +111,20 @@ export function Header({ currentView, onViewChange, navigationItems }: HeaderPro
                 sideOffset={5}
                 avoidCollisions={true}
               >
-                <DropdownMenuItem 
-                  onClick={() => onViewChange(NAVIGATION_IDS.PROFILE)}
-                  className="flex items-center gap-2"
-                >
-                  <User className="w-4 h-4" />
-                  プロフィール
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    プロフィール
+                  </Link>
                 </DropdownMenuItem>
                 
                 <DropdownMenuSeparator />
                 
-                <DropdownMenuItem 
-                  onClick={() => onViewChange(NAVIGATION_IDS.SETTINGS)}
-                  className="flex items-center gap-2"
-                >
-                  <SettingsIcon className="w-4 h-4" />
-                  設定
+                <DropdownMenuItem asChild>
+                  <Link to="/settings" className="flex items-center gap-2">
+                    <SettingsIcon className="w-4 h-4" />
+                    設定
+                  </Link>
                 </DropdownMenuItem>
                 
                 <DropdownMenuSeparator />
@@ -145,16 +144,19 @@ export function Header({ currentView, onViewChange, navigationItems }: HeaderPro
           <nav className="hidden md:flex lg:hidden items-center gap-1">
             {navigationItems.slice(0, 3).map((item) => {
               const Icon = item.icon;
+              const isActive = location.pathname === item.path;
               return (
                 <Button
                   key={item.id}
-                  variant={currentView === item.id ? "default" : "ghost"}
+                  variant={isActive ? "default" : "ghost"}
                   size="sm"
-                  onClick={() => onViewChange(item.id)}
+                  asChild
                   className="flex items-center gap-2"
                 >
-                  <Icon className="w-4 h-4" />
-                  {item.label}
+                  <Link to={item.path}>
+                    <Icon className="w-4 h-4" />
+                    {item.label}
+                  </Link>
                 </Button>
               );
             })}

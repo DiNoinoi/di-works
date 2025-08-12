@@ -5,10 +5,12 @@
 
 ## 技術スタック
 - **フレームワーク**: React 18.3.1 (TypeScript)
+- **ルーティング**: React Router DOM v6
 - **ビルドツール**: Vite
 - **スタイリング**: Tailwind CSS
 - **UIライブラリ**: Radix UI
 - **アイコン**: Lucide React
+- **バックエンド**: Supabase（認証・データベース）
 
 ## 開発コマンド
 ```bash
@@ -31,12 +33,23 @@ npm run preview
 ## 現在のプロジェクト構造（最新）
 ```
 src/
-├── App.tsx                      # メインアプリケーション
+├── App.tsx                      # React Router設定・ルート定義
 ├── main.tsx                     # エントリーポイント
 ├── index.css                    # グローバルスタイル
-├── components/
+├── pages/                       # ページラッパー（ルーティング専用）
+│   ├── Home.tsx                 # / - ホームページラッパー
+│   ├── Login.tsx                # /auth/login - ログインページラッパー
+│   ├── Signup.tsx               # /auth/signup - サインアップページラッパー
+│   ├── ResetPassword.tsx        # /auth/reset - パスワードリセットラッパー
+│   ├── NewPassword.tsx          # /auth/new-password - 新パスワード設定ラッパー
+│   ├── Profile.tsx              # /profile - プロフィールページラッパー
+│   ├── Settings.tsx             # /settings - 設定ページラッパー
+│   └── ... (その他ページ)
+├── components/                  # 機能実装コンポーネント
 │   ├── layout/                  # レイアウトコンポーネント
-│   │   └── Header.tsx           # ヘッダー
+│   │   ├── Header.tsx           # ヘッダー（React Router Link対応）
+│   │   ├── AppLayout.tsx        # 通常ページ用レイアウト
+│   │   └── AuthLayout.tsx       # 認証ページ用レイアウト
 │   ├── figma/
 │   │   └── ImageWithFallback.tsx
 │   ├── ui/                      # UIコンポーネント（shadcn/ui）
@@ -44,6 +57,7 @@ src/
 │   │   ├── card.tsx
 │   │   ├── badge.tsx
 │   │   └── ... (その他多数)
+│   ├── Home.tsx                 # ホームページ機能実装
 │   ├── KankenMasterMode.tsx     # 漢検マスターモード設定
 │   ├── KanjiProcessor.tsx       # 漢字処理・表示コンポーネント
 │   ├── PostCreation.tsx         # 投稿作成
@@ -51,7 +65,12 @@ src/
 │   ├── Settings.tsx             # 設定画面
 │   ├── UserDictionary.tsx       # ユーザー辞書
 │   ├── UserProfile.tsx          # プロフィール
-│   └── WeakKanjiList.tsx        # 苦手漢字リスト
+│   ├── WeakKanjiList.tsx        # 苦手漢字リスト
+│   └── auth/                    # 認証関連コンポーネント
+│       ├── Login.tsx            # ログイン機能実装
+│       ├── Signup.tsx           # サインアップ機能実装
+│       ├── ResetPassword.tsx    # パスワードリセット機能実装
+│       └── NewPassword.tsx      # 新パスワード設定機能実装
 ├── constants/                   # 定数・設定
 │   ├── colors.ts                # 色定義
 │   ├── kanjiLevels.ts           # 漢字級定義
@@ -62,7 +81,9 @@ src/
 │   ├── useUserSettings.ts       # ユーザー設定管理
 │   └── useKanjiData.ts          # 漢字データ管理フック
 ├── services/
-│   └── kanjiService.ts          # 漢字データアクセス層
+│   ├── kanjiService.ts          # 漢字データアクセス層
+│   └── api/                     # API層
+│       └── auth.ts              # Supabase認証API
 ├── data/
 │   └── kanji-data.json          # 漢字データ（28文字分）
 └── types/                       # 型定義
@@ -169,6 +190,8 @@ src/
 - **コメント規約**: 
   - `/** */` 形式: 関数・interface・型・ファイル説明
   - `//` 形式: 変数・定数・一行コメント
+- **ページ遷移**: React Routerを使用したURL管理とコンポーネントベースルーティング
+- **アーキテクチャ設計**: pages（ルーティング専用）とcomponents（機能実装）の明確な分離
 
 ## 漢字データ管理システム仕様
 
@@ -200,3 +223,53 @@ src/
 - シングルトンパターンでインスタンス管理
 - エラー時のフォールバック機能（プリロード失敗時は遅延ロード）
 - メモリ効率を考慮した段階的キャッシュ保存
+
+## React Routerを使ったページ遷移
+
+### ルート設計
+```
+/ - ホーム（フィード表示）
+/profile - プロフィール
+/settings - 設定
+/posts/create - 投稿作成
+/posts/:id - 投稿詳細
+/search - 検索
+/dictionary - 辞書
+/weak-kanji - 苦手漢字
+/kanken-master - 漢検マスター設定
+/notifications - 通知
+
+# 認証関連（AuthLayout使用）
+/auth/login - ログイン
+/auth/signup - サインアップ
+/auth/reset - パスワードリセット
+/auth/new-password - 新パスワード設定
+```
+
+### レイアウト設計
+- **AppLayout**: 通常ページ用（ヘッダー + メインコンテンツ + モバイルナビ）
+- **AuthLayout**: 認証ページ用（シンプルな中央配置 + ロゴ）
+
+### ページ遷移の実装方針
+- `<Link to="/path">` を使用したナビゲーション
+- プログラマティック遷移は `useNavigate()` フック使用
+- 認証状態に応じた遷移制御（AuthGuard）
+- Supabaseメール認証フローとの連携（URLパラメータ処理）
+
+### 実装例
+```tsx
+// ナビゲーション
+<Link to="/profile">プロフィール</Link>
+
+// プログラマティック遷移
+const navigate = useNavigate();
+const handleLogin = async () => {
+  await authService.signIn(email, password);
+  navigate('/'); // ホームにリダイレクト
+};
+
+// 認証ガード
+<Route element={<AuthGuard />}>
+  <Route path="profile" element={<Profile />} />
+</Route>
+```
