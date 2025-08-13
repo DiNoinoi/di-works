@@ -1,10 +1,10 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { User, ChevronDown, Settings as SettingsIcon } from 'lucide-react';
-// import { authService } from '../../services/api/auth';
+import { authService } from '../../services/api/auth';
 import { APP_NAME } from '../../constants/app';
 
 interface HeaderProps {
@@ -23,6 +23,8 @@ interface HeaderProps {
  */
 export function Header({ navigationItems }: HeaderProps) {
   const location = useLocation();
+  const navigate = useNavigate();
+  
   // 一時的にモックデータを使用
   const user = {
     name: '漢字太郎',
@@ -34,15 +36,12 @@ export function Header({ navigationItems }: HeaderProps) {
    * ログアウト処理
    */
   const handleLogout = async () => {
-    // 本実装時:
-    // try {
-    //   await authService.signOut();
-    //   // 必要に応じてページリロードまたはログイン画面へリダイレクト
-    // } catch (error) {
-    //   console.error('ログアウトエラー:', error);
-    // }
-    
-    console.log('ログアウト処理（未実装）');
+    try {
+      await authService.signOut();
+      navigate('/'); // ホーム画面へリダイレクト
+    } catch (error) {
+      console.error('ログアウトエラー:', error);
+    }
   };
 
   return (
