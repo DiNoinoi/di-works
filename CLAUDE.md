@@ -193,6 +193,18 @@ src/
 - **ページ遷移**: React Routerを使用したURL管理とコンポーネントベースルーティング
 - **アーキテクチャ設計**: pages（ルーティング専用）とcomponents（機能実装）の明確な分離
 
+## UIデザイン統一ガイドライン
+
+### 入力フォーム
+- **ボーダー色**: `border-gray-300` - 全入力フィールド共通
+- **プレースホルダー色**: `placeholder:text-gray-400` - 控えめなグレー
+- **実装例**: `className="border-gray-300 placeholder:text-gray-400"`
+- **統一対象**: Input、Select、Textarea等すべての入力要素
+
+### ボタン
+- **プライマリ**: `bg-blue-500 hover:bg-blue-600 text-white` - メイン操作用
+- **セカンダリ**: `variant="outline" border-gray-300` - サブ操作用
+
 ## 漢字データ管理システム仕様
 
 ### データ構造
