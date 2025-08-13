@@ -1,8 +1,8 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Header } from './Header';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 import { Home, PlusCircle, User, Search, Bell, BookOpen, Eye, AlertTriangle, Settings as SettingsIcon } from 'lucide-react';
-import { NAVIGATION_IDS } from '../../constants/navigation';
+import { NAVIGATION_IDS } from '@/constants/navigation';
 
 /**
  * 通常ページ用レイアウト

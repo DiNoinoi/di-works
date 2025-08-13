@@ -1,5 +1,5 @@
-import { FILTER_MODES } from '../constants/filterModes';
-import { JIS_LEVELS } from '../constants/jisLevels';
+import { FILTER_MODES } from '@/constants/filterModes';
+import { JIS_LEVELS } from '@/constants/jisLevels';
 
 /**
  * 漢字マスターモードのフィルタ種別

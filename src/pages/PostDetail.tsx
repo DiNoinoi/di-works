@@ -1,4 +1,4 @@
-import { PostDetail } from '../components/PostDetail';
+import { PostDetail } from '@/components/PostDetail';
 
 /**
  * 投稿詳細ページラッパー

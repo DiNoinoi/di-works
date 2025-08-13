@@ -1,4 +1,4 @@
-import { KankenMasterMode } from '../components/KankenMasterMode';
+import { KankenMasterMode } from '@/components/KankenMasterMode';
 
 /**
  * 漢検マスターページラッパー

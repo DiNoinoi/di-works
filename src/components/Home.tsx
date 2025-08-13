@@ -1,18 +1,18 @@
 import { Link } from 'react-router-dom';
-import { KanjiProcessor } from '../components/KanjiProcessor';
-import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Switch } from '../components/ui/switch';
-import { Label } from '../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { KanjiProcessor } from '@/components/KanjiProcessor';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MessageCircle, BookOpen, Eye, Settings as SettingsIcon, FileText, EyeOff } from 'lucide-react';
-import { OFFICIAL_KANJI_LEVELS } from '../constants/kanjiLevels';
-import { FILTER_MODES } from '../constants/filterModes';
-import { JIS_LEVELS, JIS_LEVEL_LABELS } from '../constants/jisLevels';
-import { useUserSettings } from '../hooks/useUserSettings';
-import { useKanjiData } from '../hooks/useKanjiData';
-import { APP_NAME } from '../constants/app';
+import { OFFICIAL_KANJI_LEVELS } from '@/constants/kanjiLevels';
+import { FILTER_MODES } from '@/constants/filterModes';
+import { JIS_LEVELS, JIS_LEVEL_LABELS } from '@/constants/jisLevels';
+import { useUserSettings } from '@/hooks/useUserSettings';
+import { useKanjiData } from '@/hooks/useKanjiData';
+import { APP_NAME } from '@/constants/app';
 import type { FilterMode, UnassignedJISLevel } from '../types/settings';
 
 /**

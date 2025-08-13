@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
-import { Switch } from './ui/switch';
-import { Button } from './ui/button';
-import { Label } from './ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Progress } from './ui/progress';
-import { Badge } from './ui/badge';
-import { Separator } from './ui/separator';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import { Settings as SettingsIcon, Shield, Award, Eye, EyeOff, Save, Users, Target } from 'lucide-react';
 
 export function Settings() {

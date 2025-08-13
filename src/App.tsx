@@ -1,20 +1,20 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AppLayout } from './components/layout/AppLayout';
-import { AuthLayout } from './components/layout/AuthLayout';
-import { HomePage } from './pages/Home';
-import { Profile } from './pages/Profile';
-import { SettingsPage } from './pages/Settings';
-import { PostCreate } from './pages/PostCreate';
-import { Dictionary } from './pages/Dictionary';
-import { WeakKanji } from './pages/WeakKanji';
-import { KankenMaster } from './pages/KankenMaster';
-import { PostDetailPage } from './pages/PostDetail';
-import { LoginPage } from './pages/auth/Login';
-import { SignupPage } from './pages/auth/Signup';
-import { ResetPasswordPage } from './pages/auth/ResetPassword';
-import { NewPasswordPage } from './pages/auth/NewPassword';
-import { supabase } from './lib/supabase';
+import { AppLayout } from '@/components/layout/AppLayout';
+import { AuthLayout } from '@/components/layout/AuthLayout';
+import { HomePage } from '@/pages/Home';
+import { Profile } from '@/pages/Profile';
+import { SettingsPage } from '@/pages/Settings';
+import { PostCreate } from '@/pages/PostCreate';
+import { Dictionary } from '@/pages/Dictionary';
+import { WeakKanji } from '@/pages/WeakKanji';
+import { KankenMaster } from '@/pages/KankenMaster';
+import { PostDetailPage } from '@/pages/PostDetail';
+import { LoginPage } from '@/pages/auth/Login';
+import { SignupPage } from '@/pages/auth/Signup';
+import { ResetPasswordPage } from '@/pages/auth/ResetPassword';
+import { NewPasswordPage } from '@/pages/auth/NewPassword';
+import { supabase } from '@/lib/supabase';
 import { Search, Bell } from 'lucide-react';
 
 /**

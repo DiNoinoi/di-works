@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Switch } from './ui/switch';
-import { Label } from './ui/label';
-import { TooltipProvider } from './ui/tooltip';
-import { Badge } from './ui/badge';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { Badge } from '@/components/ui/badge';
 import { Eye } from 'lucide-react';
 
 // 新しい統合constants
-import { OFFICIAL_KANJI_LEVELS } from '../constants/kanjiLevels';
-import { FILTER_MODES } from '../constants/filterModes';
-import { JIS_LEVELS, JIS_LEVEL_LABELS, JIS_LEVEL_4 } from '../constants/jisLevels';
-import { LEVEL_PRE1 } from '../constants/kanjiLevels';
-import { LEVEL_COLORS } from '../constants/colors';
+import { OFFICIAL_KANJI_LEVELS } from '@/constants/kanjiLevels';
+import { FILTER_MODES } from '@/constants/filterModes';
+import { JIS_LEVELS, JIS_LEVEL_LABELS, JIS_LEVEL_4 } from '@/constants/jisLevels';
+import { LEVEL_PRE1 } from '@/constants/kanjiLevels';
+import { LEVEL_COLORS } from '@/constants/colors';
 import { KanjiProcessor } from './KanjiProcessor';
 import type { MasterModeSettings, FilterMode, UnassignedJISLevel } from '../types/settings';
 

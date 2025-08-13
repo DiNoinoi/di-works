@@ -1,4 +1,4 @@
-import type { NavigationItem } from '../types/navigation';
+import type { NavigationItem } from '@/types/navigation';
 import { Home, PlusCircle, User, Search, Bell, BookOpen, Eye, AlertTriangle, Settings } from 'lucide-react';
 
 /**

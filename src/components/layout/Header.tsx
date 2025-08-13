@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Button } from '../ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { User, ChevronDown, Settings as SettingsIcon } from 'lucide-react';
-import { authService } from '../../services/api/auth';
-import { APP_NAME } from '../../constants/app';
+import { authService } from '@/services/api/auth';
+import { APP_NAME } from '@/constants/app';
 
 interface HeaderProps {
   /** ナビゲーション項目 */

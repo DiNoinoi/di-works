@@ -1,4 +1,4 @@
-import { WeakKanjiList } from '../components/WeakKanjiList';
+import { WeakKanjiList } from '@/components/WeakKanjiList';
 
 /**
  * 苦手漢字ページラッパー

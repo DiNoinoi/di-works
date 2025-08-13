@@ -1,4 +1,4 @@
-import { PostCreation } from '../components/PostCreation';
+import { PostCreation } from '@/components/PostCreation';
 
 /**
  * 投稿作成ページラッパー

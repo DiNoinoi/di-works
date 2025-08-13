@@ -3,7 +3,7 @@
  * シンプルプリロード + メモリキャッシュ方式
  */
 
-import type { KanjiInfo, KanjiDataCollection, ProcessedChar } from '../types/kanji';
+import type { KanjiInfo, KanjiDataCollection, ProcessedChar } from '@/types/kanji';
 
 // メモリキャッシュ（Map）
 let kanjiCache = new Map<number, KanjiInfo>();

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
-import { Badge } from './ui/badge';
-import { getLevelColor } from '../constants/colors';
-import { useKanjiData } from '../hooks/useKanjiData';
-import type { KanjiInfo, ProcessedChar } from '../types/kanji';
-import type { FilterMode, UnassignedJISLevel } from '../types/settings';
-import { OFFICIAL_KANJI_LEVELS, LEVEL_UNASSIGNED } from '../constants/kanjiLevels';
-import { FILTER_MODES } from '../constants/filterModes';
-import { JIS_LEVELS, JIS_LEVEL_4 } from '../constants/jisLevels';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Badge } from '@/components/ui/badge';
+import { getLevelColor } from '@/constants/colors';
+import { useKanjiData } from '@/hooks/useKanjiData';
+import type { KanjiInfo, ProcessedChar } from '@/types/kanji';
+import type { FilterMode, UnassignedJISLevel } from '@/types/settings';
+import { OFFICIAL_KANJI_LEVELS, LEVEL_UNASSIGNED } from '@/constants/kanjiLevels';
+import { FILTER_MODES } from '@/constants/filterModes';
+import { JIS_LEVELS, JIS_LEVEL_4 } from '@/constants/jisLevels';
 
 /**
  * 個別の漢字文字を表示するコンポーネントのProps

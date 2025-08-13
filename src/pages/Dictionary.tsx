@@ -1,4 +1,4 @@
-import { UserDictionary } from '../components/UserDictionary';
+import { UserDictionary } from '@/components/UserDictionary';
 
 /**
  * 辞書ページラッパー

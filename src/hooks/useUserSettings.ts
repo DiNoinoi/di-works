@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import type { MasterModeSettings, UnassignedJISLevel } from '../types/settings';
-import { FILTER_MODES } from '../constants/filterModes';
-import { LEVEL_PRE1 } from '../constants/kanjiLevels';
-import { DEFAULT_JIS_LEVEL } from '../constants/jisLevels';
+import type { MasterModeSettings, UnassignedJISLevel } from '@/types/settings';
+import { FILTER_MODES } from '@/constants/filterModes';
+import { LEVEL_PRE1 } from '@/constants/kanjiLevels';
+import { DEFAULT_JIS_LEVEL } from '@/constants/jisLevels';
 
 /**
  * ユーザー設定管理のカスタムフック

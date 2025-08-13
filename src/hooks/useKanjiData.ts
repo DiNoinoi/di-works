@@ -10,8 +10,8 @@ import {
   processTextKanji, 
   getCacheSize, 
   isPreloaded 
-} from '../services/kanjiService';
-import type { KanjiInfo, ProcessedChar } from '../types/kanji';
+} from '@/services/kanjiService';
+import type { KanjiInfo, ProcessedChar } from '@/types/kanji';
 
 /**
  * 漢字データ管理フック

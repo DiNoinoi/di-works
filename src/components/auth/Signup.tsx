@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { authService } from '../../services/api/auth';
-import { getInputClasses, getPrimaryButtonClasses } from '../../constants/colors';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { authService } from '@/services/api/auth';
+import { getInputClasses, getPrimaryButtonClasses } from '@/constants/colors';
 
 /**
  * サインアップコンポーネント
