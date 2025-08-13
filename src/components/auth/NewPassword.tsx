@@ -38,7 +38,6 @@ export function NewPassword() {
 
     try {
       await authService.updatePassword(password);
-      // パスワード更新成功後、ホーム画面へリダイレクト
       navigate('/');
     } catch (error) {
       setError('パスワードの更新に失敗しました。再度お試しください。');

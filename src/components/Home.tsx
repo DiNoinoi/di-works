@@ -13,6 +13,7 @@ import { JIS_LEVELS, JIS_LEVEL_LABELS } from '@/constants/jisLevels';
 import { useUserSettings } from '@/hooks/useUserSettings';
 import { useKanjiData } from '@/hooks/useKanjiData';
 import { APP_NAME } from '@/constants/app';
+import { useLoginUserStore } from '@/stores/loginUserStore';
 import type { FilterMode, UnassignedJISLevel } from '../types/settings';
 
 /**
@@ -32,6 +33,9 @@ export function Home() {
     updateShowUnassigned,
     updateUnassignedJisLevel
   } = useUserSettings();
+
+  // 認証状態管理
+  const isLoggedIn = useLoginUserStore(state => state.userId !== '');
 
   const feedPosts = [
     {
@@ -94,24 +98,26 @@ export function Home() {
         <h1 className="text-3xl font-bold mb-2">{APP_NAME}</h1>
         <p className="text-gray-600">{APP_NAME}は漢字学習をする人のコミュニティです。気軽に問題投稿をお楽しみください。</p>
         
-        {/* ログイン・サインアップボタン */}
-        <div className="mt-6 flex gap-4 justify-center">
-          <Button 
-            asChild
-            size="lg"
-            className="bg-blue-500 hover:bg-blue-600 text-white"
-          >
-            <Link to="/auth/login">ログインする</Link>
-          </Button>
-          <Button 
-            asChild
-            size="lg"
-            variant="outline"
-            className="border-gray-300 text-gray-700 hover:bg-gray-50"
-          >
-            <Link to="/auth/signup">アカウント作成して利用する</Link>
-          </Button>
-        </div>
+        {/* ログイン・サインアップボタン（未ログイン時のみ表示） */}
+        {!isLoggedIn && (
+          <div className="mt-6 flex gap-4 justify-center">
+            <Button 
+              asChild
+              size="lg"
+              className="bg-blue-500 hover:bg-blue-600 text-white"
+            >
+              <Link to="/auth/login">ログインする</Link>
+            </Button>
+            <Button 
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-gray-300 text-gray-700 hover:bg-gray-50"
+            >
+              <Link to="/auth/signup">アカウント作成して利用する</Link>
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* 漢検マスターモードコントロール */}

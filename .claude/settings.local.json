@@ -16,7 +16,9 @@
       "WebFetch(domain:supabase.com)",
       "mcp__serena__replace_symbol_body",
       "Bash(mv:*)",
-      "mcp__serena__replace_regex"
+      "mcp__serena__replace_regex",
+      "WebFetch(domain:pmndrs.github.io)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": []
   }

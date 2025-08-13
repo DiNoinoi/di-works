@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Heart, MessageCircle, Share, Quote, Send, MoreHorizontal } from 'lucide-react';
 
@@ -86,7 +86,7 @@ const mockPost: Post = {
   isLiked: false
 };
 
-export function PostDetail({ postId }: { postId: number }) {
+export function PostDetail() {
   const [post, setPost] = useState<Post>(mockPost);
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
