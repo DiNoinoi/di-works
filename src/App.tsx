@@ -12,6 +12,8 @@ import { KankenMaster } from './pages/KankenMaster';
 import { PostDetailPage } from './pages/PostDetail';
 import { LoginPage } from './pages/Login';
 import { SignupPage } from './pages/Signup';
+import { ResetPasswordPage } from './pages/ResetPassword';
+import { NewPasswordPage } from './pages/NewPassword';
 import { supabase } from './lib/supabase';
 import { Search, Bell } from 'lucide-react';
 
@@ -71,18 +73,8 @@ function App() {
         <Route path="/auth" element={<AuthLayout />}>
           <Route path="login" element={<LoginPage />} />
           <Route path="signup" element={<SignupPage />} />
-          <Route path="reset" element={
-            <div className="text-center">
-              <h2 className="text-2xl font-semibold mb-4">パスワードリセット</h2>
-              <p className="text-gray-600">パスワードリセットページを実装中...</p>
-            </div>
-          } />
-          <Route path="new-password" element={
-            <div className="text-center">
-              <h2 className="text-2xl font-semibold mb-4">新しいパスワード</h2>
-              <p className="text-gray-600">新パスワード設定ページを実装中...</p>
-            </div>
-          } />
+          <Route path="reset" element={<ResetPasswordPage />} />
+          <Route path="new-password" element={<NewPasswordPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

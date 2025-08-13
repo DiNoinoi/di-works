@@ -46,5 +46,27 @@ export const authService = {
   async getCurrentUser(): Promise<User | null> {
     const { data } = await supabase.auth.getUser()
     return data.user
+  },
+
+  /**
+   * パスワードリセットメール送信
+   */
+  async resetPassword(email: string): Promise<void> {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/new-password`
+    })
+
+    if (error) throw error
+  },
+
+  /**
+   * パスワード更新
+   */
+  async updatePassword(newPassword: string): Promise<void> {
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    })
+
+    if (error) throw error
   }
 } as const
