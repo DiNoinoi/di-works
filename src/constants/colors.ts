@@ -35,3 +35,39 @@ export const LEVEL_COLORS: { [key: string]: string } = {
 export const getLevelColor = (level: string): string => {
   return LEVEL_COLORS[level] || LEVEL_COLORS[LEVEL_UNASSIGNED];
 };
+
+// 入力フィールド用カラー
+export const INPUT_COLORS = {
+  BORDER: '#d1d5db',
+  BORDER_FOCUS: '#cecece',
+  PLACEHOLDER: '#9ca3af',
+} as const;
+
+// ボタン用カラー
+export const BUTTON_COLORS = {
+  PRIMARY: '#3b82f6',
+  PRIMARY_HOVER: '#2563eb',
+} as const;
+
+/**
+ * 入力フィールドのTailwindクラス文字列を取得
+ */
+export const getInputClasses = () => [
+  'border-gray-300',
+  'placeholder:text-gray-400',
+  `focus-visible:!border-[${INPUT_COLORS.BORDER_FOCUS}]`,
+  'focus-visible:!border-2',
+  'focus-visible:!ring-0',
+  'transition-all',
+  'duration-75',
+  'ease-in'
+].join(' ');
+
+/**
+ * プライマリボタンのTailwindクラス文字列を取得
+ */
+export const getPrimaryButtonClasses = () => [
+  'bg-blue-500',
+  'hover:bg-blue-600',
+  'text-white'
+].join(' ');

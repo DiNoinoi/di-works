@@ -196,14 +196,18 @@ src/
 ## UIデザイン統一ガイドライン
 
 ### 入力フォーム
-- **ボーダー色**: `border-gray-300` - 全入力フィールド共通
-- **プレースホルダー色**: `placeholder:text-gray-400` - 控えめなグレー
-- **実装例**: `className="border-gray-300 placeholder:text-gray-400"`
+- **統一関数**: `getInputClasses()` を使用（`constants/colors.ts`定義）
+- **フォーカス時**: 枠線が`#cecece`に変化、75msのイーズイン
 - **統一対象**: Input、Select、Textarea等すべての入力要素
 
 ### ボタン
-- **プライマリ**: `bg-blue-500 hover:bg-blue-600 text-white` - メイン操作用
+- **プライマリ**: `getPrimaryButtonClasses()` を使用（`constants/colors.ts`定義）
 - **セカンダリ**: `variant="outline" border-gray-300` - サブ操作用
+
+### 色管理
+- **色定数**: `constants/colors.ts`で一元管理
+- **関数化**: UIコンポーネント別に専用関数を定義
+- **使用例**: `className={getInputClasses()}`
 
 ## 漢字データ管理システム仕様
 

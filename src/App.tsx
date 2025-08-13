@@ -11,6 +11,7 @@ import { WeakKanji } from './pages/WeakKanji';
 import { KankenMaster } from './pages/KankenMaster';
 import { PostDetailPage } from './pages/PostDetail';
 import { LoginPage } from './pages/Login';
+import { SignupPage } from './pages/Signup';
 import { supabase } from './lib/supabase';
 import { Search, Bell } from 'lucide-react';
 
@@ -69,12 +70,7 @@ function App() {
         {/* 認証ページ（AuthLayout使用） */}
         <Route path="/auth" element={<AuthLayout />}>
           <Route path="login" element={<LoginPage />} />
-          <Route path="signup" element={
-            <div className="text-center">
-              <h2 className="text-2xl font-semibold mb-4">アカウント作成</h2>
-              <p className="text-gray-600">サインアップページを実装中...</p>
-            </div>
-          } />
+          <Route path="signup" element={<SignupPage />} />
           <Route path="reset" element={
             <div className="text-center">
               <h2 className="text-2xl font-semibold mb-4">パスワードリセット</h2>
