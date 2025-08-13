@@ -10,10 +10,10 @@ import { Dictionary } from './pages/Dictionary';
 import { WeakKanji } from './pages/WeakKanji';
 import { KankenMaster } from './pages/KankenMaster';
 import { PostDetailPage } from './pages/PostDetail';
-import { LoginPage } from './pages/Login';
-import { SignupPage } from './pages/Signup';
-import { ResetPasswordPage } from './pages/ResetPassword';
-import { NewPasswordPage } from './pages/NewPassword';
+import { LoginPage } from './pages/auth/Login';
+import { SignupPage } from './pages/auth/Signup';
+import { ResetPasswordPage } from './pages/auth/ResetPassword';
+import { NewPasswordPage } from './pages/auth/NewPassword';
 import { supabase } from './lib/supabase';
 import { Search, Bell } from 'lucide-react';
 
