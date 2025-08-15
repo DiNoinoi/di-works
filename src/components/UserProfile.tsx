@@ -1,8 +1,12 @@
+import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Award, BookOpen, Trophy, Star, Calendar } from 'lucide-react';
+import { useLoginUserStore } from '@/stores/loginUserStore';
+import { profileService } from '@/services/api/profile';
+import { UserProfileBasicResponse } from '@/types/api/profile/response/UserProfileBasicResponse';
 
 const kankenLevels = [
   { level: '1級', color: 'bg-purple-600', passed: 3 },
@@ -58,19 +62,64 @@ const certifiedQuizzes = [
 ];
 
 export function UserProfile() {
-  const userData = {
-    name: '漢字太郎',
-    username: '@kanji_taro',
-    bio: '漢字の美しさに魅了された社会人です。毎日新しい漢字を学ぶことが日課。漢検1級を目指して勉強中！',
-    joinDate: '2023年8月',
-    profileImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-    stats: {
-      postsCount: 234,
-      followers: 1250,
-      following: 890,
-      quizzesSolved: 3420
-    }
-  };
+  const { userId } = useLoginUserStore();
+  const [profileData, setProfileData] = useState<UserProfileBasicResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      if (!userId) {
+        setError('ユーザーIDが見つかりません');
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        const data = await profileService.getProfileBasic(userId);
+        setProfileData(data);
+        setError(null);
+      } catch (err) {
+        console.error('Profile fetch error:', err);
+        setError('プロフィール情報の取得に失敗しました');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfileData();
+  }, [userId]);
+
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-4xl mx-auto space-y-6">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center">読み込み中...</div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (error || !profileData) {
+    return (
+      <div className="w-full max-w-4xl mx-auto space-y-6">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center text-red-600">{error || 'プロフィール情報を取得できませんでした'}</div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // 日付フォーマット
+  const joinDate = new Date(profileData.created_at).toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'long'
+  });
 
   const highestLevel = kankenLevels.find(level => level.passed > 0);
 
@@ -83,48 +132,45 @@ export function UserProfile() {
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex flex-col items-center">
                 <Avatar className="w-24 h-24">
-                  <AvatarImage src={userData.profileImage} alt={userData.name} />
-                  <AvatarFallback className="text-2xl">{userData.name[0]}</AvatarFallback>
+                  <AvatarImage src="" alt={profileData.user_name} />
+                  <AvatarFallback className="text-2xl">{profileData.user_name[0]}</AvatarFallback>
                 </Avatar>
 
                 {/* 最高級バッジ */}
                 {highestLevel && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Badge
-                        className={`mt-3 ${highestLevel.color} text-white px-3 py-1 text-lg font-bold`}
-                      >
-                        <Award className="w-4 h-4 mr-1" />
-                        {highestLevel.level}
-                      </Badge>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>漢字検定{highestLevel.level}保持者</p>
-                      <p>合格回数: {highestLevel.passed}回</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  <div className="mt-3">
+                    <Badge
+                      className={`${highestLevel.color} text-white px-3 py-1 text-lg font-bold`}
+                      title={`漢字検定${highestLevel.level}保持者 - 合格回数: ${highestLevel.passed}回`}
+                    >
+                      <Award className="w-4 h-4 mr-1" />
+                      {highestLevel.level}
+                    </Badge>
+                  </div>
                 )}
               </div>
 
               <div className="flex-1 space-y-4">
                 <div>
-                  <h1 className="text-2xl font-bold">{userData.name}</h1>
-                  <p className="text-gray-600">{userData.username}</p>
-                  <p className="mt-2 text-gray-700">{userData.bio}</p>
+                  <h1 className="text-2xl font-bold">{profileData.user_name}</h1>
+                  <p className="text-gray-600">@{profileData.display_id}</p>
+                  {profileData.profile_text && (
+                    <p className="mt-2 text-gray-700">{profileData.profile_text}</p>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-4 text-sm text-gray-600">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    {userData.joinDate}加入
+                    {joinDate}加入
                   </span>
                 </div>
 
                 <div className="flex gap-6 text-sm">
-                  <span><strong>{userData.stats.postsCount}</strong> 投稿</span>
-                  <span><strong>{userData.stats.followers.toLocaleString()}</strong> フォロワー</span>
-                  <span><strong>{userData.stats.following}</strong> フォロー中</span>
-                  <span><strong>{userData.stats.quizzesSolved.toLocaleString()}</strong> クイズ回答</span>
+                  <span><strong>{profileData.post_count}</strong> 投稿</span>
+                  <span><strong>{profileData.follower_count.toLocaleString()}</strong> フォロワー</span>
+                  <span><strong>{profileData.following_count}</strong> フォロー中</span>
+                  <span><strong>{profileData.answer_count.toLocaleString()}</strong> 解答数</span>
                 </div>
               </div>
             </div>
@@ -217,20 +263,25 @@ export function UserProfile() {
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{userData.stats.quizzesSolved.toLocaleString()}</div>
-                <div className="text-sm text-gray-600">回答したクイズ</div>
+                <div className="text-2xl font-bold text-blue-600">{profileData.answer_count.toLocaleString()}</div>
+                <div className="text-sm text-gray-600">解答数</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">2,890</div>
+                <div className="text-2xl font-bold text-green-600">{profileData.correct_count.toLocaleString()}</div>
                 <div className="text-sm text-gray-600">正解数</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">84.5%</div>
+                <div className="text-2xl font-bold text-purple-600">
+                  {profileData.answer_count > 0 
+                    ? `${((profileData.correct_count / profileData.answer_count) * 100).toFixed(1)}%`
+                    : '0%'
+                  }
+                </div>
                 <div className="text-sm text-gray-600">正答率</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-orange-600">127</div>
-                <div className="text-sm text-gray-600">作成したクイズ</div>
+                <div className="text-2xl font-bold text-orange-600">{profileData.post_count}</div>
+                <div className="text-sm text-gray-600">投稿数</div>
               </div>
             </div>
           </CardContent>

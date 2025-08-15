@@ -4,7 +4,7 @@
 export interface CreateProfileRequest {
   user_id: string;
   display_id: string;
-  username: string;
+  user_name: string;
   birth_date?: string;
   birth_date_public: boolean;
   profile_text?: string;

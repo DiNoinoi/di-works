@@ -28,7 +28,7 @@ export function ProfileSetup() {
 
   const [formData, setFormData] = useState<ProfileFormData>({
     displayId: '',
-    username: '',
+    userName: '',
     birthDate: '',
     birthDatePublic: false,
     profileText: '',
@@ -158,7 +158,7 @@ export function ProfileSetup() {
 
     // バリデーション
     const displayIdValidation = validateDisplayId(formData.displayId);
-    const usernameValidation = validateUsername(formData.username);
+    const usernameValidation = validateUsername(formData.userName);
     const birthDateValidation = validateBirthDate(formData.birthDate);
     const profileTextValidation = validateProfileText(formData.profileText);
 
@@ -172,7 +172,7 @@ export function ProfileSetup() {
       await profileService.createProfile({
         user_id: userId,
         display_id: formData.displayId,
-        username: formData.username,
+        user_name: formData.userName,
         birth_date: formData.birthDate || undefined,
         birth_date_public: formData.birthDatePublic,
         profile_text: formData.profileText || undefined,
@@ -235,9 +235,9 @@ export function ProfileSetup() {
             <Input
               id="username"
               type="text"
-              value={formData.username}
+              value={formData.userName}
               onChange={(e) => {
-                updateFormData('username', e.target.value);
+                updateFormData('userName', e.target.value);
                 setUsernameTouched(true);
               }}
               className={getInputClasses()}
@@ -245,8 +245,8 @@ export function ProfileSetup() {
               maxLength={50}
               disabled={isLoading}
             />
-            {usernameTouched && validateUsername(formData.username) && (
-              <p className="text-sm text-red-600">{validateUsername(formData.username)}</p>
+            {usernameTouched && validateUsername(formData.userName) && (
+              <p className="text-sm text-red-600">{validateUsername(formData.userName)}</p>
             )}
           </div>
 

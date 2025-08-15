@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase';
 import { CreateProfileRequest } from '@/types/api/profile/request/CreateProfileRequest';
 import { UpdateProfileRequest } from '@/types/api/profile/request/UpdateProfileRequest';
 import { CheckDisplayIdResponse } from '@/types/api/profile/response/CheckDisplayIdResponse';
+import { UserProfileBasicResponse } from '@/types/api/profile/response/UserProfileBasicResponse';
 
 /**
  * プロフィール関連API処理
@@ -92,6 +93,39 @@ export const profileService = {
     } catch (error) {
       console.error('Profile update error:', error);
       throw new Error('プロフィール情報の更新に失敗しました');
+    }
+  },
+
+  /**
+   * プロフィール基本情報取得
+   */
+  async getProfileBasic(userId: string): Promise<UserProfileBasicResponse> {
+    try {
+      const { data, error } = await supabase
+        .from('user_info')
+        .select(`
+          user_id,
+          display_id,
+          user_name,
+          profile_text,
+          created_at,
+          answer_count,
+          correct_count,
+          post_count,
+          follower_count,
+          following_count
+        `)
+        .eq('user_id', userId)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Profile basic info fetch error:', error);
+      throw new Error('プロフィール基本情報の取得に失敗しました');
     }
   }
 } as const;

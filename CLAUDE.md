@@ -357,3 +357,72 @@ const handleLogin = async () => {
   <Route path="profile" element={<Profile />} />
 </Route>
 ```
+
+## データベース設計・SQL管理
+
+### doc/フォルダ構成
+```
+doc/
+├── DB定義.xlsx              # データベース設計書（ExcelはClaudeCode読み込み不可のため削除済み、SQLファイルで構造を確認する）
+├── DDL/                     # テーブル作成用SQLファイル
+│   ├── CREATE_user_info.sql           # ユーザー情報テーブル
+│   ├── CREATE_kanji_kentei_level.sql  # 漢字検定級マスタ
+│   ├── CREATE_badge_master.sql        # バッジマスタ
+│   ├── CREATE_title_master.sql        # 称号マスタ
+│   ├── CREATE_user_badges.sql         # ユーザーバッジ関連
+│   └── CREATE_user_kanji_kentei_level_count.sql # 級別統計
+└── DML/                     # データ投入用SQLファイル
+    └── INSERT_kanji_kentei_level_master.txt # 漢字検定級データ
+```
+
+### DB設計ファイルの活用方針
+- **新機能実装時**: DDLファイルでテーブル構造確認
+- **API設計時**: カラム名・型・制約をコードと照合
+- **データ整合性確認**: DMLファイルでマスターデータ確認
+- **DB変更時**: docフォルダにDDL/DMLを追加・更新
+
+### 重要な設計ポイント
+- **RLS（Row Level Security）有効**: 全テーブルでユーザー認証ベースのアクセス制御
+- **外部キー制約**: マスターデータとの整合性保証
+- **自動更新トリガー**: updated_atカラムの自動更新機能
+- **型定義との整合性**: DB設計とTypeScript型定義の完全一致
+
+## プロフィール詳細表示機能の実装方針
+
+### 段階的実装アプローチ
+プロフィール画面で詳細情報を表示する機能を段階的に実装。
+
+#### **Phase 1: 基本情報表示**
+- **データ範囲**: user_infoテーブルのみ
+- **API設計**: 単一API（JOIN不要）
+- **表示項目**:
+  - 基本情報: 表示名、ユーザーID、プロフィール文、登録日付
+  - 統計情報: 解答数、正解数、投稿数、フォロワー数、フォロー数
+
+#### **Phase 2: 称号表示（実装中）**
+- **データ範囲**: user_info + title_master（JOIN）
+- **API設計**: 単一API（LEFT JOIN使用）
+- **表示方法**: 名前の近くに色付きバッジで表示
+
+#### **Phase 3: 検定級別合格数表示**
+- **データ範囲**: user_kanji_kentei_level_count + kanji_kentei_level_master（JOIN）
+- **API設計**: 単一API（JOIN使用）
+- **表示方法**: 級別の統計情報
+
+#### **Phase 4: バッジ表示**
+- **データ範囲**: user_badges + badge_master（JOIN + 複数件）
+- **API設計**: **分割API**（初回分割ポイント）
+- **分割理由**: 複数件データで独立性が高い
+
+### ルーティング設計
+```
+/profile           # 自分のプロフィール（loginUserStore.userId使用）
+/profile/:userId   # 他ユーザープロフィール（URL指定）
+```
+
+### 技術的考慮事項
+- **Supabase**: API実行回数無制限、帯域制限5GB/月
+- **最適化**: 不要なデータ取得を避けて帯域節約
+- **UI**: 既存プロフィール画面を拡張、UIデザインは別途検討中
+
+このプロジェクトは学習目的のSNSアプリケーションであり、ユーザーの学習体験を最優先に考慮した実装を心がけること。
