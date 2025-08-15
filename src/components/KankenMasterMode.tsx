@@ -24,7 +24,7 @@ interface KankenMasterModeProps {
 }
 
 export function KankenMasterMode({ onSettingsChange, currentSettings }: KankenMasterModeProps) {
-  const [userLevel, setUserLevel] = useState(currentSettings?.userLevel || LEVEL_PRE1);
+  const [userLevel, setUserLevel] = useState(currentSettings?.userLevel || KANJI_KENTEI_LEVEL_NAME.LEVEL_PRE1);
   const [filterMode, setFilterMode] = useState<FilterMode>(currentSettings?.filterMode || FILTER_MODES.ALL);
   const [showUnassigned, setShowUnassigned] = useState(currentSettings?.showUnassigned || false);
   const [unassignedJisLevel, setUnassignedJisLevel] = useState<UnassignedJISLevel>(currentSettings?.unassignedJisLevel || JIS_LEVEL_4);
