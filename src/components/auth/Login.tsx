@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,6 +16,7 @@ export function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +25,11 @@ export function Login() {
 
     try {
       await authService.signIn(email, password);
-      navigate('/'); // ホームにリダイレクト
+      
+      // プロフィール作成画面以外の場合のみホーム画面に遷移
+      if (!location.pathname.includes('/auth/profile-setup')) {
+        navigate('/');
+      }
     } catch (error) {
       setError('ログインに失敗しました。メールアドレスとパスワードを確認してください。');
       console.error('ログインエラー:', error);

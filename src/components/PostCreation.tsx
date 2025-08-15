@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
+import { getSelectClasses } from '@/constants/colors';
 import { Star, Send } from 'lucide-react';
 
 const StarRating = ({ rating, onRatingChange }: { rating: number; onRatingChange: (rating: number) => void }) => {
@@ -113,7 +114,7 @@ export function PostCreation() {
               <div className="space-y-2">
                 <Label htmlFor="quiz-type">クイズタイプ *</Label>
                 <Select value={quizType} onValueChange={setQuizType}>
-                  <SelectTrigger>
+                  <SelectTrigger className={getSelectClasses()}>
                     <SelectValue placeholder="クイズタイプを選択" />
                   </SelectTrigger>
                   <SelectContent>

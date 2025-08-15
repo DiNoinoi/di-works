@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { MasterModeSettings, UnassignedJISLevel } from '@/types/settings';
 import { FILTER_MODES } from '@/constants/filterModes';
-import { LEVEL_PRE1 } from '@/constants/kanjiLevels';
+import { KANJI_KENTEI_LEVEL_NAME } from '@/constants/kanjiLevels';
 import { DEFAULT_JIS_LEVEL } from '@/constants/jisLevels';
 
 /**
@@ -14,10 +14,10 @@ export const useUserSettings = () => {
   
   // 漢字マスターモードの詳細設定
   const [masterModeSettings, setMasterModeSettings] = useState<MasterModeSettings>({
-    userLevel: LEVEL_PRE1,                        // 準1級
-    filterMode: FILTER_MODES.AT_OR_BELOW,        // 保持級以下を表示
-    showUnassigned: false,                       // 配当外漢字は初期非表示
-    unassignedJisLevel: DEFAULT_JIS_LEVEL        // JIS第4水準まで（全表示）
+    userLevel: KANJI_KENTEI_LEVEL_NAME.LEVEL_PRE1,    // 準1級
+    filterMode: FILTER_MODES.AT_OR_BELOW,             // 保持級以下を表示
+    showUnassigned: false,                            // 配当外漢字は初期非表示
+    unassignedJisLevel: DEFAULT_JIS_LEVEL             // JIS第4水準まで（全表示）
   });
 
   /**

@@ -5,7 +5,7 @@ import { getLevelColor } from '@/constants/colors';
 import { useKanjiData } from '@/hooks/useKanjiData';
 import type { KanjiInfo, ProcessedChar } from '@/types/kanji';
 import type { FilterMode, UnassignedJISLevel } from '@/types/settings';
-import { OFFICIAL_KANJI_LEVELS, LEVEL_UNASSIGNED } from '@/constants/kanjiLevels';
+import { OFFICIAL_KANJI_LEVELS, KANJI_KENTEI_LEVEL_NAME } from '@/constants/kanjiLevels';
 import { FILTER_MODES } from '@/constants/filterModes';
 import { JIS_LEVELS, JIS_LEVEL_4 } from '@/constants/jisLevels';
 
@@ -36,7 +36,7 @@ const KanjiChar: React.FC<KanjiCharProps> = ({ char, data, isHighlighted }) => {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <span className={`px-1 rounded ${data.level === LEVEL_UNASSIGNED ? getLevelColor(data.jisLevel) : getLevelColor(data.level)} cursor-pointer transition-all hover:shadow-sm`}>
+        <span className={`px-1 rounded ${data.level === KANJI_KENTEI_LEVEL_NAME.LEVEL_UNASSIGNED ? getLevelColor(data.jisLevel) : getLevelColor(data.level)} cursor-pointer transition-all hover:shadow-sm`}>
           {char}
         </span>
       </TooltipTrigger>
@@ -96,7 +96,7 @@ export function KanjiProcessor({
    * @returns 配当外漢字かどうか
    */
   const isUnassignedKanji = (level: string): boolean => {
-    return level === LEVEL_UNASSIGNED;
+    return level === KANJI_KENTEI_LEVEL_NAME.LEVEL_UNASSIGNED;
   };
 
   /**

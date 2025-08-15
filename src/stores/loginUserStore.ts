@@ -32,6 +32,8 @@ export const useLoginUserStore = create<LoginUserState>()(
     }),
     {
       name: 'authState',
+      // ローカルストレージにはuserIdのみを保存（isLoggedIn関数は除外）
+      partialize: (state) => ({ userId: state.userId }),
     }
   )
 )

@@ -18,7 +18,9 @@
       "Bash(mv:*)",
       "mcp__serena__replace_regex",
       "WebFetch(domain:pmndrs.github.io)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:tailwindcss.com)",
+      "WebFetch(domain:developer.mozilla.org)"
     ],
     "deny": []
   }

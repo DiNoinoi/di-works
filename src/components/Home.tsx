@@ -14,6 +14,7 @@ import { useUserSettings } from '@/hooks/useUserSettings';
 import { useKanjiData } from '@/hooks/useKanjiData';
 import { APP_NAME } from '@/constants/app';
 import { useLoginUserStore } from '@/stores/loginUserStore';
+import { getSelectClasses } from '@/constants/colors';
 import type { FilterMode, UnassignedJISLevel } from '../types/settings';
 
 /**
@@ -171,7 +172,7 @@ export function Home() {
                     value={masterModeSettings.userLevel}
                     onValueChange={(value) => updateMasterModeSettings({ ...masterModeSettings, userLevel: value })}
                   >
-                    <SelectTrigger className="h-8 text-xs bg-white">
+                    <SelectTrigger className={`${getSelectClasses()} h-8 text-xs bg-white`}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -188,7 +189,7 @@ export function Home() {
                     value={masterModeSettings.filterMode}
                     onValueChange={(value: FilterMode) => updateMasterModeSettings({ ...masterModeSettings, filterMode: value })}
                   >
-                    <SelectTrigger className="h-8 text-xs bg-white">
+                    <SelectTrigger className={`${getSelectClasses()} h-8 text-xs bg-white`}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -218,7 +219,7 @@ export function Home() {
                     value={masterModeSettings.unassignedJisLevel}
                     onValueChange={masterModeSettings.showUnassigned ? (value: UnassignedJISLevel) => updateUnassignedJisLevel(value) : undefined}
                   >
-                    <SelectTrigger className={`h-8 text-xs bg-white ${!masterModeSettings.showUnassigned ? 'opacity-50 pointer-events-none' : ''}`}>
+                    <SelectTrigger className={`${getSelectClasses()} h-8 text-xs bg-white ${!masterModeSettings.showUnassigned ? 'opacity-50 pointer-events-none' : ''}`}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

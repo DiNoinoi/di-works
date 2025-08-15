@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { AlertTriangle, TrendingDown, Target, BookOpen, RotateCcw, CheckCircle, XCircle } from 'lucide-react';
-import { getLevelColor } from '@/constants/colors';
+import { getLevelColor, getSelectClasses } from '@/constants/colors';
 
 interface WeakKanji {
   id: number;
@@ -225,7 +225,7 @@ export function WeakKanjiList() {
                   <div className="space-y-2">
                     <label className="text-sm font-medium">並び順</label>
                     <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger>
+                      <SelectTrigger className={getSelectClasses()}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -240,7 +240,7 @@ export function WeakKanjiList() {
                   <div className="space-y-2">
                     <label className="text-sm font-medium">カテゴリ</label>
                     <Select value={filterCategory} onValueChange={setFilterCategory}>
-                      <SelectTrigger>
+                      <SelectTrigger className={getSelectClasses()}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -255,7 +255,7 @@ export function WeakKanjiList() {
                   <div className="space-y-2">
                     <label className="text-sm font-medium">学習状況</label>
                     <Select value={filterStatus} onValueChange={setFilterStatus}>
-                      <SelectTrigger>
+                      <SelectTrigger className={getSelectClasses()}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>

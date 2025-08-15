@@ -13,6 +13,7 @@ import { LoginPage } from '@/pages/auth/Login';
 import { SignupPage } from '@/pages/auth/Signup';
 import { ResetPasswordPage } from '@/pages/auth/ResetPassword';
 import { NewPasswordPage } from '@/pages/auth/NewPassword';
+import { ProfileSetupPage } from '@/pages/auth/ProfileSetup';
 import { AuthProvider } from '@/lib/AuthProvider';
 import { Search, Bell } from 'lucide-react';
 
@@ -61,6 +62,7 @@ function App() {
             <Route path="signup" element={<SignupPage />} />
             <Route path="reset" element={<ResetPasswordPage />} />
             <Route path="new-password" element={<NewPasswordPage />} />
+            <Route path="profile-setup" element={<ProfileSetupPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

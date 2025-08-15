@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { BookOpen, Plus, Search, ExternalLink, Quote } from 'lucide-react';
-import { getLevelColor } from '@/constants/colors';
+import { getLevelColor, getSelectClasses } from '@/constants/colors';
 
 interface DictionaryEntry {
   id: number;
@@ -225,7 +225,7 @@ export function UserDictionary() {
                 <div className="space-y-2">
                   <Label htmlFor="sort">並び順</Label>
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger>
+                    <SelectTrigger className={getSelectClasses()}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -239,7 +239,7 @@ export function UserDictionary() {
                 <div className="space-y-2">
                   <Label htmlFor="filter">配当級フィルタ</Label>
                   <Select value={filterLevel} onValueChange={setFilterLevel}>
-                    <SelectTrigger>
+                    <SelectTrigger className={getSelectClasses()}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

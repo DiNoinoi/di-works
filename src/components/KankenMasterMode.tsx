@@ -8,11 +8,10 @@ import { Badge } from '@/components/ui/badge';
 import { Eye } from 'lucide-react';
 
 // 新しい統合constants
-import { OFFICIAL_KANJI_LEVELS } from '@/constants/kanjiLevels';
+import { OFFICIAL_KANJI_LEVELS, KANJI_KENTEI_LEVEL_NAME } from '@/constants/kanjiLevels';
 import { FILTER_MODES } from '@/constants/filterModes';
 import { JIS_LEVELS, JIS_LEVEL_LABELS, JIS_LEVEL_4 } from '@/constants/jisLevels';
-import { LEVEL_PRE1 } from '@/constants/kanjiLevels';
-import { LEVEL_COLORS } from '@/constants/colors';
+import { LEVEL_COLORS, getSelectClasses } from '@/constants/colors';
 import { KanjiProcessor } from './KanjiProcessor';
 import type { MasterModeSettings, FilterMode, UnassignedJISLevel } from '../types/settings';
 
@@ -69,7 +68,7 @@ export function KankenMasterMode({ onSettingsChange, currentSettings }: KankenMa
               <div className="space-y-2">
                 <Label htmlFor="user-level">保持級</Label>
                 <Select value={userLevel} onValueChange={setUserLevel}>
-                  <SelectTrigger>
+                  <SelectTrigger className={getSelectClasses()}>
                     <SelectValue placeholder="保持級を選択" />
                   </SelectTrigger>
                   <SelectContent>
@@ -83,7 +82,7 @@ export function KankenMasterMode({ onSettingsChange, currentSettings }: KankenMa
               <div className="space-y-2">
                 <Label htmlFor="filter-mode">フィルタ</Label>
                 <Select value={filterMode} onValueChange={(value: FilterMode) => setFilterMode(value)}>
-                  <SelectTrigger>
+                  <SelectTrigger className={getSelectClasses()}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -114,7 +113,7 @@ export function KankenMasterMode({ onSettingsChange, currentSettings }: KankenMa
                   value={unassignedJisLevel}
                   onValueChange={showUnassigned ? (value: UnassignedJISLevel) => setUnassignedJisLevel(value) : undefined}
                 >
-                  <SelectTrigger className={!showUnassigned ? 'opacity-50 pointer-events-none' : ''}>
+                  <SelectTrigger className={`${getSelectClasses()} ${!showUnassigned ? 'opacity-50 pointer-events-none' : ''}`}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

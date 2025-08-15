@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,6 +16,7 @@ export function NewPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +39,11 @@ export function NewPassword() {
 
     try {
       await authService.updatePassword(password);
-      navigate('/');
+      
+      // プロフィール作成画面以外の場合のみホーム画面に遷移
+      if (!location.pathname.includes('/auth/profile-setup')) {
+        navigate('/');
+      }
     } catch (error) {
       setError('パスワードの更新に失敗しました。再度お試しください。');
       console.error('パスワード更新エラー:', error);

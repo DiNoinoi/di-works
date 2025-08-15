@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
+import { getSelectClasses } from '@/constants/colors';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Settings as SettingsIcon, Shield, Award, Eye, EyeOff, Save, Users, Target } from 'lucide-react';
@@ -210,7 +211,7 @@ export function Settings() {
                 <div className="space-y-2">
                   <Label htmlFor="default-quiz-type">デフォルトクイズタイプ</Label>
                   <Select value={defaultQuizType} onValueChange={setDefaultQuizType}>
-                    <SelectTrigger>
+                    <SelectTrigger className={getSelectClasses()}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -227,7 +228,7 @@ export function Settings() {
                 <div className="space-y-2">
                   <Label htmlFor="default-difficulty">デフォルト難易度</Label>
                   <Select value={defaultDifficulty.toString()} onValueChange={(value) => setDefaultDifficulty(parseInt(value))}>
-                    <SelectTrigger>
+                    <SelectTrigger className={getSelectClasses()}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

@@ -10,6 +10,7 @@
 - **スタイリング**: Tailwind CSS
 - **UIライブラリ**: Radix UI
 - **アイコン**: Lucide React
+- **状態管理**: Zustand（persist middleware使用）
 - **バックエンド**: Supabase（認証・データベース）
 
 ## 開発コマンド
@@ -38,12 +39,14 @@ src/
 ├── index.css                    # グローバルスタイル
 ├── pages/                       # ページラッパー（ルーティング専用）
 │   ├── Home.tsx                 # / - ホームページラッパー
-│   ├── Login.tsx                # /auth/login - ログインページラッパー
-│   ├── Signup.tsx               # /auth/signup - サインアップページラッパー
-│   ├── ResetPassword.tsx        # /auth/reset - パスワードリセットラッパー
-│   ├── NewPassword.tsx          # /auth/new-password - 新パスワード設定ラッパー
 │   ├── Profile.tsx              # /profile - プロフィールページラッパー
 │   ├── Settings.tsx             # /settings - 設定ページラッパー
+│   ├── auth/                    # 認証ページラッパー
+│   │   ├── Login.tsx            # /auth/login - ログインページラッパー
+│   │   ├── Signup.tsx           # /auth/signup - サインアップページラッパー
+│   │   ├── ResetPassword.tsx    # /auth/reset - パスワードリセットラッパー
+│   │   ├── NewPassword.tsx      # /auth/new-password - 新パスワード設定ラッパー
+│   │   └── ProfileSetup.tsx     # /auth/profile-setup - プロフィール作成ラッパー
 │   └── ... (その他ページ)
 ├── components/                  # 機能実装コンポーネント
 │   ├── layout/                  # レイアウトコンポーネント
@@ -70,7 +73,8 @@ src/
 │       ├── Login.tsx            # ログイン機能実装
 │       ├── Signup.tsx           # サインアップ機能実装
 │       ├── ResetPassword.tsx    # パスワードリセット機能実装
-│       └── NewPassword.tsx      # 新パスワード設定機能実装
+│       ├── NewPassword.tsx      # 新パスワード設定機能実装
+│       └── ProfileSetup.tsx     # プロフィール作成機能実装
 ├── constants/                   # 定数・設定
 │   ├── colors.ts                # 色定義
 │   ├── kanjiLevels.ts           # 漢字級定義
@@ -83,23 +87,43 @@ src/
 ├── services/
 │   ├── kanjiService.ts          # 漢字データアクセス層
 │   └── api/                     # API層
-│       └── auth.ts              # Supabase認証API
+│       ├── auth.ts              # Supabase認証API
+│       └── profile.ts           # プロフィール関連API
+├── stores/                      # 状態管理（Zustand）
+│   └── loginUserStore.ts        # ログインユーザー状態管理
+├── lib/                         # 外部ライブラリ設定
+│   ├── supabase.ts              # Supabase設定
+│   └── AuthProvider.tsx         # 認証状態監視プロバイダー
 ├── data/
 │   └── kanji-data.json          # 漢字データ（28文字分）
 └── types/                       # 型定義
+    ├── api/                     # API関連型定義
+    │   └── profile/             # プロフィールAPI型
+    │       ├── request/         # リクエスト型
+    │       │   ├── CreateProfileRequest.ts
+    │       │   └── UpdateProfileRequest.ts
+    │       └── response/        # レスポンス型
+    │           └── CheckDisplayIdResponse.ts
+    ├── stores/                  # ストア関連型
+    │   └── loginUser.ts         # ログインユーザー型
     ├── settings.ts              # 設定関連型
     ├── kanji.ts                 # 漢字関連型定義
+    ├── profile.ts               # プロフィール関連型
     └── navigation.ts            # ナビゲーション型
 ```
 
 ## 機能一覧
-1. **漢検マスターモード**: 投稿内の漢字を配当級別に色分け表示
+1. **認証システム**: ユーザー登録・ログイン・パスワードリセット
+   - Supabase認証（メール認証）
+   - プロフィール作成機能（初回登録時必須）
+   - 自動ログイン状態管理（Zustand + localStorage）
+2. **漢検マスターモード**: 投稿内の漢字を配当級別に色分け表示
    - 漢検配当内漢字（10級〜1級）のフィルタ機能
    - 配当外漢字（JIS第1〜第4水準）の独立表示制御
-2. **投稿システム**: テキスト投稿とクイズ投稿
-3. **ユーザープロフィール**: 個人設定とプロフィール管理
-4. **辞書機能**: 漢字検索・学習支援
-5. **苦手漢字管理**: 学習進捗の追跡
+3. **投稿システム**: テキスト投稿とクイズ投稿
+4. **ユーザープロフィール**: 個人設定とプロフィール管理
+5. **辞書機能**: 漢字検索・学習支援
+6. **苦手漢字管理**: 学習進捗の追跡
 
 ## コーディング規約
 - TypeScriptの厳密な型定義を使用
@@ -303,6 +327,7 @@ src/
 /auth/signup - サインアップ
 /auth/reset - パスワードリセット
 /auth/new-password - 新パスワード設定
+/auth/profile-setup - プロフィール作成（初回登録時必須）
 ```
 
 ### レイアウト設計

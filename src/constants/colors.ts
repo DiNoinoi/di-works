@@ -1,7 +1,4 @@
-import {
-  LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_5, LEVEL_6, LEVEL_7, LEVEL_8, LEVEL_9, LEVEL_10,
-  LEVEL_PRE1, LEVEL_PRE2, LEVEL_UNASSIGNED
-} from './kanjiLevels';
+import { KANJI_KENTEI_LEVEL_NAME } from './kanjiLevels';
 import { JIS_LEVEL_1, JIS_LEVEL_2, JIS_LEVEL_3, JIS_LEVEL_4 } from './jisLevels';
 
 /**
@@ -9,18 +6,18 @@ import { JIS_LEVEL_1, JIS_LEVEL_2, JIS_LEVEL_3, JIS_LEVEL_4 } from './jisLevels'
  * KanjiProcessor.tsx、KanjiMasterMode.tsx、UserDictionary.tsxの重複を統合
  */
 export const LEVEL_COLORS: { [key: string]: string } = {
-  [LEVEL_10]: 'bg-green-100 text-green-800',
-  [LEVEL_9]: 'bg-green-200 text-green-800',
-  [LEVEL_8]: 'bg-blue-100 text-blue-800',
-  [LEVEL_7]: 'bg-blue-200 text-blue-800',
-  [LEVEL_6]: 'bg-cyan-100 text-cyan-800',
-  [LEVEL_5]: 'bg-pink-100 text-pink-800',
-  [LEVEL_4]: 'bg-indigo-100 text-indigo-800',
-  [LEVEL_3]: 'bg-yellow-100 text-yellow-800',
-  [LEVEL_PRE2]: 'bg-orange-200 text-orange-800',
-  [LEVEL_2]: 'bg-orange-100 text-orange-800',
-  [LEVEL_PRE1]: 'bg-red-100 text-red-800',
-  [LEVEL_1]: 'bg-red-200 text-red-800',
+  [KANJI_KENTEI_LEVEL_NAME.LEVEL_10]: 'bg-green-100 text-green-800',
+  [KANJI_KENTEI_LEVEL_NAME.LEVEL_9]: 'bg-green-200 text-green-800',
+  [KANJI_KENTEI_LEVEL_NAME.LEVEL_8]: 'bg-blue-100 text-blue-800',
+  [KANJI_KENTEI_LEVEL_NAME.LEVEL_7]: 'bg-blue-200 text-blue-800',
+  [KANJI_KENTEI_LEVEL_NAME.LEVEL_6]: 'bg-cyan-100 text-cyan-800',
+  [KANJI_KENTEI_LEVEL_NAME.LEVEL_5]: 'bg-pink-100 text-pink-800',
+  [KANJI_KENTEI_LEVEL_NAME.LEVEL_4]: 'bg-indigo-100 text-indigo-800',
+  [KANJI_KENTEI_LEVEL_NAME.LEVEL_3]: 'bg-yellow-100 text-yellow-800',
+  [KANJI_KENTEI_LEVEL_NAME.LEVEL_PRE2]: 'bg-orange-200 text-orange-800',
+  [KANJI_KENTEI_LEVEL_NAME.LEVEL_2]: 'bg-orange-100 text-orange-800',
+  [KANJI_KENTEI_LEVEL_NAME.LEVEL_PRE1]: 'bg-red-100 text-red-800',
+  [KANJI_KENTEI_LEVEL_NAME.LEVEL_1]: 'bg-red-200 text-red-800',
 
   // 配当外漢字JIS水準の色（紫系統で特別感を演出）
   [JIS_LEVEL_1]: 'bg-violet-100 text-violet-800',
@@ -33,7 +30,7 @@ export const LEVEL_COLORS: { [key: string]: string } = {
  * 指定した級の色を取得
  */
 export const getLevelColor = (level: string): string => {
-  return LEVEL_COLORS[level] || LEVEL_COLORS[LEVEL_UNASSIGNED];
+  return LEVEL_COLORS[level] || LEVEL_COLORS[KANJI_KENTEI_LEVEL_NAME.LEVEL_UNASSIGNED];
 };
 
 // 入力フィールド用カラー
@@ -55,9 +52,40 @@ export const BUTTON_COLORS = {
 export const getInputClasses = () => [
   'border-gray-300',
   'placeholder:text-gray-400',
-  `focus-visible:!border-[${INPUT_COLORS.BORDER_FOCUS}]`,
-  'focus-visible:!border-2',
-  'focus-visible:!ring-0',
+  'focus-visible:border-[#cecece]',
+  'focus-visible:border-2',
+  'focus-visible:ring-0',
+  'transition-all',
+  'duration-75',
+  'ease-in'
+].join(' ');
+
+/**
+ * セレクトフィールドのTailwindクラス文字列を取得
+ */
+export const getSelectClasses = () => [
+  'border-gray-300',
+  'focus:border-[#cecece]',
+  'focus:border-2',
+  'focus:ring-0',
+  'data-[state=open]:border-[#cecece]',
+  'data-[state=open]:border-2',
+  'transition-all',
+  'duration-75',
+  'ease-in'
+].join(' ');
+
+/**
+ * テキストエリアのTailwindクラス文字列を取得
+ */
+export const getTextareaClasses = () => [
+  'border-2',
+  'border-transparent',
+  'ring-1',
+  'ring-gray-300',
+  'placeholder:text-gray-400',
+  'focus-visible:border-[#cecece]',
+  'focus-visible:ring-0',
   'transition-all',
   'duration-75',
   'ease-in'

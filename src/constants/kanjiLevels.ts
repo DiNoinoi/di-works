@@ -2,41 +2,83 @@
  * 漢字検定の級定数
  */
 
-// 個々の級の定数定義
-export const LEVEL_10 = '10級';
-export const LEVEL_9 = '9級';
-export const LEVEL_8 = '8級';
-export const LEVEL_7 = '7級';
-export const LEVEL_6 = '6級';
-export const LEVEL_5 = '5級';
-export const LEVEL_4 = '4級';
-export const LEVEL_3 = '3級';
-export const LEVEL_PRE2 = '準2級';
-export const LEVEL_2 = '2級';
-export const LEVEL_PRE1 = '準1級';
-export const LEVEL_1 = '1級';
-export const LEVEL_UNASSIGNED = '配当外';
+/**
+ * 漢字検定級の名称定数グループ
+ */
+export const KANJI_KENTEI_LEVEL_NAME = {
+  LEVEL_10: '10級',
+  LEVEL_9: '9級',
+  LEVEL_8: '8級',
+  LEVEL_7: '7級',
+  LEVEL_6: '6級',
+  LEVEL_5: '5級',
+  LEVEL_4: '4級',
+  LEVEL_3: '3級',
+  LEVEL_PRE2: '準2級',
+  LEVEL_2: '2級',
+  LEVEL_PRE1: '準1級',
+  LEVEL_1: '1級',
+  LEVEL_UNASSIGNED: '配当外'
+} as const;
+
+/**
+ * 漢字検定級のID定数グループ（DB用）
+ */
+export const KANJI_KENTEI_LEVEL_ID = {
+  LEVEL_10: 'level_10',
+  LEVEL_9: 'level_9',
+  LEVEL_8: 'level_8',
+  LEVEL_7: 'level_7',
+  LEVEL_6: 'level_6',
+  LEVEL_5: 'level_5',
+  LEVEL_4: 'level_4',
+  LEVEL_3: 'level_3',
+  LEVEL_PRE2: 'level_pre_2',
+  LEVEL_2: 'level_2',
+  LEVEL_PRE1: 'level_pre_1',
+  LEVEL_1: 'level_1'
+} as const;
 
 /**
  * 漢字検定の級一覧（易しい順・配当外含む）
  */
 export const KANJI_LEVELS = [
-  LEVEL_10, LEVEL_9, LEVEL_8, LEVEL_7, LEVEL_6, LEVEL_5,
-  LEVEL_4, LEVEL_3, LEVEL_PRE2, LEVEL_2, LEVEL_PRE1, LEVEL_1,
-  LEVEL_UNASSIGNED
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_10,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_9,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_8,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_7,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_6,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_5,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_4,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_3,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_PRE2,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_2,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_PRE1,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_1,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_UNASSIGNED
 ] as const;
 
 /**
- * 漢字検定の級のみ一覧（易しい順・配当外含む）
+ * 漢字検定の級のみ一覧（易しい順・配当外除く）
  */
 export const OFFICIAL_KANJI_LEVELS = [
-  LEVEL_10, LEVEL_9, LEVEL_8, LEVEL_7, LEVEL_6, LEVEL_5,
-  LEVEL_4, LEVEL_3, LEVEL_PRE2, LEVEL_2, LEVEL_PRE1, LEVEL_1
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_10,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_9,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_8,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_7,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_6,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_5,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_4,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_3,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_PRE2,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_2,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_PRE1,
+  KANJI_KENTEI_LEVEL_NAME.LEVEL_1
 ] as const;
 
 /**
  * 配当外を除くかどうかのフィルタ判定
  */
 export const isOfficialLevel = (level: string): boolean => {
-  return level !== LEVEL_UNASSIGNED;
+  return level !== KANJI_KENTEI_LEVEL_NAME.LEVEL_UNASSIGNED;
 };
