@@ -1,4 +1,4 @@
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { APP_NAME } from '../../constants/app';
 
 /**
@@ -9,14 +9,14 @@ export function AuthLayout() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="max-w-md w-full space-y-8 px-4">
-        {/* ロゴ部分 */}
+        {/* ロゴ部分（リンクなし） */}
         <div className="text-center">
-          <Link to="/" className="inline-flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+          <div className="inline-flex items-center gap-3 select-none">
+            <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center text-white font-bold text-xl select-none">
               漢
             </div>
-            <span className="text-2xl font-bold text-gray-900">{APP_NAME}</span>
-          </Link>
+            <span className="text-2xl font-bold text-gray-900 select-none">{APP_NAME}</span>
+          </div>
         </div>
 
         {/* 認証フォームエリア */}
