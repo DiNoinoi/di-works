@@ -3,6 +3,7 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { HomePage } from '@/pages/Home';
 import { Profile } from '@/pages/Profile';
+import ProfileEditPage from '@/pages/ProfileEdit';
 import { SettingsPage } from '@/pages/Settings';
 import { PostCreate } from '@/pages/PostCreate';
 import { Dictionary } from '@/pages/Dictionary';
@@ -30,6 +31,7 @@ function App() {
           <Route path="/" element={<AppLayout />}>
             <Route index element={<HomePage />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="profile/edit" element={<ProfileEditPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="posts/create" element={<PostCreate />} />
             <Route path="posts/:id" element={<PostDetailPage />} />

@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Award, BookOpen, Trophy, Star, Calendar } from 'lucide-react';
+import { Award, BookOpen, Trophy, Star, Calendar, Edit } from 'lucide-react';
 import { useLoginUserStore } from '@/stores/loginUserStore';
 import { profileService } from '@/services/api/profile';
 import { GetUserProfileResponse } from '@/types/api/profile/response/GetUserProfileResponse';
@@ -15,6 +17,7 @@ import { PROFILE_LEVEL_COLORS } from '@/constants/colors';
 
 export function UserProfile() {
   const { userId } = useLoginUserStore();
+  const navigate = useNavigate();
   const [profileData, setProfileData] = useState<GetUserProfileResponse | null>(null);
   const [kanjiKenteiLevels, setKanjiKenteiLevels] = useState<GetUserKanjiKenteiLevelsResponse[]>([]);
   const [userBadges, setUserBadges] = useState<GetUserBadgesResponse[]>([]);
@@ -111,6 +114,19 @@ export function UserProfile() {
                     </Badge>
                   </div>
                 )}
+
+                {/* プロフィール編集ボタン */}
+                <div className="mt-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate('/profile/edit')}
+                    className="flex items-center gap-1 border-gray-300"
+                  >
+                    <Edit className="w-4 h-4" />
+                    編集
+                  </Button>
+                </div>
               </div>
 
               <div className="flex-1 space-y-4">
