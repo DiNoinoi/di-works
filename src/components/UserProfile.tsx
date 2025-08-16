@@ -7,14 +7,9 @@ import { Award, BookOpen, Trophy, Star, Calendar } from 'lucide-react';
 import { useLoginUserStore } from '@/stores/loginUserStore';
 import { profileService } from '@/services/api/profile';
 import { GetUserProfileResponse } from '@/types/api/profile/response/GetUserProfileResponse';
+import { GetUserKanjiKenteiLevelsResponse } from '@/types/api/profile/response/GetUserKanjiKenteiLevelsResponse';
+import { PROFILE_LEVEL_COLORS } from '@/constants/colors';
 
-const kankenLevels = [
-  { level: '1級', color: 'bg-purple-600', passed: 3 },
-  { level: '準1級', color: 'bg-indigo-600', passed: 2 },
-  { level: '2級', color: 'bg-blue-600', passed: 1 },
-  { level: '準2級', color: 'bg-green-600', passed: 1 },
-  { level: '3級', color: 'bg-yellow-600', passed: 2 },
-];
 
 const certifiedQuizzes = [
   {
@@ -64,11 +59,12 @@ const certifiedQuizzes = [
 export function UserProfile() {
   const { userId } = useLoginUserStore();
   const [profileData, setProfileData] = useState<GetUserProfileResponse | null>(null);
+  const [kanjiKenteiLevels, setKanjiKenteiLevels] = useState<GetUserKanjiKenteiLevelsResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchProfileData = async () => {
+    const fetchData = async () => {
       if (!userId) {
         setError('ユーザーIDが見つかりません');
         setIsLoading(false);
@@ -77,18 +73,24 @@ export function UserProfile() {
 
       try {
         setIsLoading(true);
-        const data = await profileService.getUserProfile(userId);
-        setProfileData(data);
+        // 並列でAPI呼び出し
+        const [profileData, levelsData] = await Promise.all([
+          profileService.getUserProfile(userId),
+          profileService.getUserKanjiKenteiLevels(userId)
+        ]);
+        
+        setProfileData(profileData);
+        setKanjiKenteiLevels(levelsData);
         setError(null);
       } catch (err) {
-        console.error('Profile fetch error:', err);
+        console.error('Data fetch error:', err);
         setError('プロフィール情報の取得に失敗しました');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchProfileData();
+    fetchData();
   }, [userId]);
 
   if (isLoading) {
@@ -121,7 +123,8 @@ export function UserProfile() {
     month: 'long'
   });
 
-  const highestLevel = kankenLevels.find(level => level.passed > 0);
+  // 最高級を取得（serviceで既にソート済み、最初の要素が最高級）
+  const highestLevel = kanjiKenteiLevels?.[0];
 
   return (
     <TooltipProvider>
@@ -140,11 +143,11 @@ export function UserProfile() {
                 {highestLevel && (
                   <div className="mt-3">
                     <Badge
-                      className={`${highestLevel.color} text-white px-3 py-1 text-lg font-bold`}
-                      title={`漢字検定${highestLevel.level}保持者 - 合格回数: ${highestLevel.passed}回`}
+                      className={`${PROFILE_LEVEL_COLORS[highestLevel.kanji_kentei_level_id]} text-white px-3 py-1 text-lg font-bold`}
+                      title={`漢字検定${highestLevel.kanji_kentei_level_name}保持者 - 合格回数: ${highestLevel.passed_count}回`}
                     >
                       <Award className="w-4 h-4 mr-1" />
-                      {highestLevel.level}
+                      {highestLevel.kanji_kentei_level_name}
                     </Badge>
                   </div>
                 )}
@@ -203,31 +206,20 @@ export function UserProfile() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {kankenLevels.map((level) => (
-                <Tooltip key={level.level}>
+              {kanjiKenteiLevels?.map((level) => (
+                <Tooltip key={level.kanji_kentei_level_id}>
                   <TooltipTrigger asChild>
-                    <div className={`relative p-4 rounded-lg border-2 transition-all cursor-pointer ${level.passed > 0
-                      ? `${level.color} text-white border-transparent shadow-md`
-                      : 'bg-gray-100 text-gray-400 border-gray-300'
-                      }`}>
+                    <div className={`relative p-4 rounded-lg border-2 transition-all cursor-pointer ${PROFILE_LEVEL_COLORS[level.kanji_kentei_level_id]} text-white border-transparent shadow-md`}>
                       <div className="text-center">
-                        <div className="font-bold text-lg">{level.level}</div>
-                        {level.passed > 0 && (
-                          <div className="text-xs mt-1">×{level.passed}</div>
-                        )}
+                        <div className="font-bold text-lg">{level.kanji_kentei_level_name}</div>
+                        <div className="text-xs mt-1">×{level.passed_count}</div>
                       </div>
-                      {level.passed > 0 && (
-                        <Award className="absolute top-1 right-1 w-4 h-4" />
-                      )}
+                      <Award className="absolute top-1 right-1 w-4 h-4" />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>漢字検定{level.level}</p>
-                    {level.passed > 0 ? (
-                      <p>合格回数: {level.passed}回</p>
-                    ) : (
-                      <p>未取得</p>
-                    )}
+                    <p>漢字検定{level.kanji_kentei_level_name}</p>
+                    <p>合格回数: {level.passed_count}回</p>
                   </TooltipContent>
                 </Tooltip>
               ))}

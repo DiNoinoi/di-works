@@ -404,12 +404,12 @@ doc/
 - **API設計**: 単一API（LEFT JOIN使用）
 - **表示方法**: 名前の近くに色付きバッジで表示
 
-#### **Phase 3: 検定級別合格数表示（実装中）**
+#### **Phase 3: 検定級別合格数表示**
 - **データ範囲**: user_kanji_kentei_level_count + kanji_kentei_level_master（JOIN）
 - **API設計**: 単一API（JOIN使用）
 - **表示方法**: 級別の統計情報
 
-#### **Phase 4: バッジ表示**
+#### **Phase 4: バッジ表示（実装中）**
 - **データ範囲**: user_badges + badge_master（JOIN + 複数件）
 - **API設計**: **分割API**（初回分割ポイント）
 - **分割理由**: 複数件データで独立性が高い

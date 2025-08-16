@@ -3,6 +3,7 @@ import { CreateProfileRequest } from '@/types/api/profile/request/CreateProfileR
 import { UpdateProfileRequest } from '@/types/api/profile/request/UpdateProfileRequest';
 import { CheckDisplayIdResponse } from '@/types/api/profile/response/CheckDisplayIdResponse';
 import { GetUserProfileResponse } from '@/types/api/profile/response/GetUserProfileResponse';
+import { GetUserKanjiKenteiLevelsResponse } from '@/types/api/profile/response/GetUserKanjiKenteiLevelsResponse';
 
 /**
  * プロフィール関連API処理
@@ -138,6 +139,44 @@ export const profileService = {
     } catch (error) {
       console.error('User profile fetch error:', error);
       throw new Error('プロフィール情報の取得に失敗しました');
+    }
+  },
+
+  /**
+   * ユーザーの検定級別合格数取得
+   */
+  async getUserKanjiKenteiLevels(userId: string): Promise<GetUserKanjiKenteiLevelsResponse[]> {
+    try {
+      const { data, error } = await supabase
+        .from('user_kanji_kentei_level_count')
+        .select(`
+          kanji_kentei_level_id,
+          passed_count,
+          kanji_kentei_level_master(
+            kanji_kentei_level_name,
+            level_order
+          )
+        `)
+        .eq('user_id', userId);
+
+      if (error) {
+        throw error;
+      }
+
+      // データ変換とソート
+      const result: GetUserKanjiKenteiLevelsResponse[] = (data?.map((level: any) => ({
+        kanji_kentei_level_id: level.kanji_kentei_level_id,
+        kanji_kentei_level_name: level.kanji_kentei_level_master.kanji_kentei_level_name,
+        level_order: level.kanji_kentei_level_master.level_order,
+        passed_count: level.passed_count
+      })) || [])
+      // level_order降順でソート（高い級が先に）
+      .sort((a, b) => b.level_order - a.level_order);
+
+      return result;
+    } catch (error) {
+      console.error('User kanji kentei levels fetch error:', error);
+      throw new Error('検定級別合格数の取得に失敗しました');
     }
   }
 } as const;

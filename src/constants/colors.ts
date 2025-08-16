@@ -1,4 +1,4 @@
-import { KANJI_KENTEI_LEVEL_NAME } from './kanjiLevels';
+import { KANJI_KENTEI_LEVEL_NAME, KANJI_KENTEI_LEVEL_ID } from './kanjiLevels';
 import { JIS_LEVEL_1, JIS_LEVEL_2, JIS_LEVEL_3, JIS_LEVEL_4 } from './jisLevels';
 
 /**
@@ -99,3 +99,21 @@ export const getPrimaryButtonClasses = () => [
   'hover:bg-blue-600',
   'text-white'
 ].join(' ');
+
+/**
+ * プロフィールページ用の級別バッジ色定義
+ */
+export const PROFILE_LEVEL_COLORS: { [key: string]: string } = {
+  [KANJI_KENTEI_LEVEL_ID.LEVEL_1]: 'bg-purple-600',
+  [KANJI_KENTEI_LEVEL_ID.LEVEL_PRE1]: 'bg-indigo-600', 
+  [KANJI_KENTEI_LEVEL_ID.LEVEL_2]: 'bg-blue-600',
+  [KANJI_KENTEI_LEVEL_ID.LEVEL_PRE2]: 'bg-green-600',
+  [KANJI_KENTEI_LEVEL_ID.LEVEL_3]: 'bg-yellow-600',
+  [KANJI_KENTEI_LEVEL_ID.LEVEL_4]: 'bg-orange-600',
+  [KANJI_KENTEI_LEVEL_ID.LEVEL_5]: 'bg-red-600',
+  [KANJI_KENTEI_LEVEL_ID.LEVEL_6]: 'bg-pink-600',
+  [KANJI_KENTEI_LEVEL_ID.LEVEL_7]: 'bg-purple-500',
+  [KANJI_KENTEI_LEVEL_ID.LEVEL_8]: 'bg-indigo-500',
+  [KANJI_KENTEI_LEVEL_ID.LEVEL_9]: 'bg-blue-500',
+  [KANJI_KENTEI_LEVEL_ID.LEVEL_10]: 'bg-gray-500',
+};
