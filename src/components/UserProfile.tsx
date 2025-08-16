@@ -8,58 +8,16 @@ import { useLoginUserStore } from '@/stores/loginUserStore';
 import { profileService } from '@/services/api/profile';
 import { GetUserProfileResponse } from '@/types/api/profile/response/GetUserProfileResponse';
 import { GetUserKanjiKenteiLevelsResponse } from '@/types/api/profile/response/GetUserKanjiKenteiLevelsResponse';
+import { GetUserBadgesResponse } from '@/types/api/profile/response/GetUserBadgesResponse';
 import { PROFILE_LEVEL_COLORS } from '@/constants/colors';
 
 
-const certifiedQuizzes = [
-  {
-    id: 1,
-    name: '四字熟語マスター',
-    icon: '四',
-    description: '四字熟語に関する10問のクイズで全問正解を達成',
-    dateEarned: '2024年3月15日'
-  },
-  {
-    id: 2,
-    name: '読み名人',
-    icon: '読',
-    description: '難読漢字の読み問題で連続20問正解を達成',
-    dateEarned: '2024年2月28日'
-  },
-  {
-    id: 3,
-    name: '対義語達人',
-    icon: '対',
-    description: '対義語問題で正答率90%以上を維持',
-    dateEarned: '2024年1月10日'
-  },
-  {
-    id: 4,
-    name: '漢検博士',
-    icon: '博',
-    description: '漢検1級レベルの問題を50問以上作成',
-    dateEarned: '2024年4月5日'
-  },
-  {
-    id: 5,
-    name: '熟語創造者',
-    icon: '創',
-    description: 'オリジナル熟語問題を100問以上投稿',
-    dateEarned: '2024年3月20日'
-  },
-  {
-    id: 6,
-    name: '継続学習者',
-    icon: '継',
-    description: '30日連続でクイズに参加',
-    dateEarned: '2024年2月14日'
-  }
-];
 
 export function UserProfile() {
   const { userId } = useLoginUserStore();
   const [profileData, setProfileData] = useState<GetUserProfileResponse | null>(null);
   const [kanjiKenteiLevels, setKanjiKenteiLevels] = useState<GetUserKanjiKenteiLevelsResponse[]>([]);
+  const [userBadges, setUserBadges] = useState<GetUserBadgesResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -74,13 +32,15 @@ export function UserProfile() {
       try {
         setIsLoading(true);
         // 並列でAPI呼び出し
-        const [profileData, levelsData] = await Promise.all([
+        const [profileData, levelsData, badgesData] = await Promise.all([
           profileService.getUserProfile(userId),
-          profileService.getUserKanjiKenteiLevels(userId)
+          profileService.getUserKanjiKenteiLevels(userId),
+          profileService.getUserBadges(userId)
         ]);
         
         setProfileData(profileData);
         setKanjiKenteiLevels(levelsData);
+        setUserBadges(badgesData);
         setError(null);
       } catch (err) {
         console.error('Data fetch error:', err);
@@ -227,35 +187,46 @@ export function UserProfile() {
           </CardContent>
         </Card>
 
-        {/* 認定クイズバッジセクション */}
+        {/* 獲得バッジセクション */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Star className="w-5 h-5" />
-              認定クイズバッジ
+              獲得バッジ
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-              {certifiedQuizzes.map((quiz) => (
-                <Tooltip key={quiz.id}>
-                  <TooltipTrigger asChild>
-                    <div className="flex flex-col items-center p-3 rounded-lg bg-gradient-to-b from-yellow-50 to-yellow-100 border border-yellow-200 hover:shadow-md transition-all cursor-pointer">
-                      <div className="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-sm">
-                        {quiz.icon}
+              {userBadges.map((badge) => {
+                // nameの最初の文字をアイコンとして使用
+                const iconText = badge.name.charAt(0);
+                // 取得日をフォーマット
+                const earnedDate = new Date(badge.earned_at).toLocaleDateString('ja-JP', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                });
+                
+                return (
+                  <Tooltip key={badge.badge_id}>
+                    <TooltipTrigger asChild>
+                      <div className="flex flex-col items-center p-3 rounded-lg bg-gradient-to-b from-yellow-50 to-yellow-100 border border-yellow-200 hover:shadow-md transition-all cursor-pointer">
+                        <div className="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-sm">
+                          {iconText}
+                        </div>
+                        <div className="text-xs text-center mt-2 font-medium text-gray-700 leading-tight">
+                          {badge.name}
+                        </div>
                       </div>
-                      <div className="text-xs text-center mt-2 font-medium text-gray-700 leading-tight">
-                        {quiz.name}
-                      </div>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p className="font-semibold">{quiz.name}</p>
-                    <p className="text-sm mt-1">{quiz.description}</p>
-                    <p className="text-xs text-gray-400 mt-2">取得日: {quiz.dateEarned}</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p className="font-semibold">{badge.name}</p>
+                      <p className="text-sm mt-1">{badge.description}</p>
+                      <p className="text-xs text-gray-400 mt-2">取得日: {earnedDate}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              })}
             </div>
           </CardContent>
         </Card>

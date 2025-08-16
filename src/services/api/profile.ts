@@ -4,6 +4,7 @@ import { UpdateProfileRequest } from '@/types/api/profile/request/UpdateProfileR
 import { CheckDisplayIdResponse } from '@/types/api/profile/response/CheckDisplayIdResponse';
 import { GetUserProfileResponse } from '@/types/api/profile/response/GetUserProfileResponse';
 import { GetUserKanjiKenteiLevelsResponse } from '@/types/api/profile/response/GetUserKanjiKenteiLevelsResponse';
+import { GetUserBadgesResponse } from '@/types/api/profile/response/GetUserBadgesResponse';
 
 /**
  * プロフィール関連API処理
@@ -177,6 +178,44 @@ export const profileService = {
     } catch (error) {
       console.error('User kanji kentei levels fetch error:', error);
       throw new Error('検定級別合格数の取得に失敗しました');
+    }
+  },
+
+  /**
+   * ユーザーの獲得バッジ取得
+   */
+  async getUserBadges(userId: string): Promise<GetUserBadgesResponse[]> {
+    try {
+      const { data, error } = await supabase
+        .from('user_badges')
+        .select(`
+          badge_id,
+          earned_at,
+          badge_master(
+            name,
+            description,
+            icon_url
+          )
+        `)
+        .eq('user_id', userId);
+
+      if (error) {
+        throw error;
+      }
+
+      // データ変換
+      const result: GetUserBadgesResponse[] = (data?.map((badge: any) => ({
+        badge_id: badge.badge_id,
+        name: badge.badge_master.name,
+        description: badge.badge_master.description,
+        icon_url: badge.badge_master.icon_url,
+        earned_at: badge.earned_at
+      })) || []);
+
+      return result;
+    } catch (error) {
+      console.error('User badges fetch error:', error);
+      throw new Error('獲得バッジの取得に失敗しました');
     }
   }
 } as const;
