@@ -33,11 +33,16 @@ export function ProfileSetup() {
     birthDatePublic: false,
     profileText: '',
     avatarUrl: '',
-    kanjiKenteiLevel: ''
+    kanjiKenteiLevel: '',
+    passedCount: 1
   });
 
   // 漢字検定級の選択肢
   const kanjiKenteiOptions = [
+    {
+      value: 'none',
+      label: '持っていない'
+    },
     {
       value: KANJI_KENTEI_LEVEL_ID.LEVEL_10,
       label: KANJI_KENTEI_LEVEL_NAME.LEVEL_10
@@ -115,6 +120,11 @@ export function ProfileSetup() {
     return '';
   };
 
+  const validatePassedCount = (value: number): string => {
+    if (value > 999) return '合格回数は999回以下で入力してください';
+    return '';
+  };
+
   // 表示用IDの重複チェック（デバウンス処理付き）
   const checkDisplayIdAvailability = async (displayId: string) => {
     if (!displayId || validateDisplayId(displayId)) return;
@@ -135,7 +145,7 @@ export function ProfileSetup() {
   };
 
   // フォーム値の更新
-  const updateFormData = (field: keyof ProfileFormData, value: string | boolean) => {
+  const updateFormData = (field: keyof ProfileFormData, value: string | boolean | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
 
     // 表示用IDの場合は重複チェック
@@ -161,14 +171,16 @@ export function ProfileSetup() {
     const usernameValidation = validateUsername(formData.userName);
     const birthDateValidation = validateBirthDate(formData.birthDate);
     const profileTextValidation = validateProfileText(formData.profileText);
+    const passedCountValidation = validatePassedCount(formData.passedCount);
 
-    if (displayIdValidation || usernameValidation || birthDateValidation || profileTextValidation || displayIdError) {
+    if (displayIdValidation || usernameValidation || birthDateValidation || profileTextValidation || passedCountValidation || displayIdError) {
       setError('入力内容を確認してください');
       setIsLoading(false);
       return;
     }
 
     try {
+      // プロフィール基本情報を作成
       await profileService.createProfile({
         user_id: userId,
         display_id: formData.displayId,
@@ -177,8 +189,17 @@ export function ProfileSetup() {
         birth_date_public: formData.birthDatePublic,
         profile_text: formData.profileText || undefined,
         avatar_url: formData.avatarUrl || undefined,
-        kanji_kentei_level: formData.kanjiKenteiLevel || undefined
+        kanji_kentei_level: (formData.kanjiKenteiLevel && formData.kanjiKenteiLevel !== 'none') ? formData.kanjiKenteiLevel : undefined
       });
+
+      // 級が選択されていて合格回数が1以上の場合、合格回数も保存
+      if (formData.kanjiKenteiLevel && formData.kanjiKenteiLevel !== 'none' && formData.passedCount > 0) {
+        await profileService.upsertUserKanjiKenteiLevel({
+          user_id: userId,
+          kanji_kentei_level_id: formData.kanjiKenteiLevel,
+          passed_count: formData.passedCount
+        });
+      }
 
       // プロフィール作成完了後、ホーム画面に遷移
       navigate('/');
@@ -307,13 +328,22 @@ export function ProfileSetup() {
             <Label htmlFor="kanjiKenteiLevel">漢字検定の保持級（任意）</Label>
             <Select
               value={formData.kanjiKenteiLevel}
-              onValueChange={(value) => updateFormData('kanjiKenteiLevel', value)}
+              onValueChange={(value) => {
+                updateFormData('kanjiKenteiLevel', value);
+                // 実際の級が選択されたら合格回数を1回にリセット
+                if (value && value !== 'none') {
+                  updateFormData('passedCount', 1);
+                } else {
+                  updateFormData('passedCount', 0);
+                }
+              }}
               disabled={isLoading}
+              dir="ltr"
             >
-              <SelectTrigger className={getSelectClasses()}>
+              <SelectTrigger className={`${getSelectClasses()} hover:bg-transparent focus:bg-transparent`}>
                 <SelectValue placeholder="選択してください" />
               </SelectTrigger>
-              <SelectContent className="border border-gray-300">
+              <SelectContent className="border border-gray-300" position="popper">
                 {kanjiKenteiOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
@@ -324,6 +354,34 @@ export function ProfileSetup() {
             <p className="text-sm text-gray-500">
               級を設定するにはベタ問テストが必要です（後で設定可能）
             </p>
+          </div>
+
+          {/* 合格回数 */}
+          <div className="space-y-2">
+            <Label htmlFor="passedCount">選択した級の合格回数</Label>
+            <div className="flex items-center gap-1">
+              <Input
+                id="passedCount"
+                type="number"
+                value={formData.kanjiKenteiLevel && formData.kanjiKenteiLevel !== 'none' ? formData.passedCount : 0}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 0;
+                  updateFormData('passedCount', count);
+                  // 0回を選択したら級を未選択状態に戻す
+                  if (count === 0) {
+                    updateFormData('kanjiKenteiLevel', '');
+                  }
+                }}
+                className={`${getInputClasses()} w-20 ${!formData.kanjiKenteiLevel || formData.kanjiKenteiLevel === 'none' ? 'text-gray-400' : ''}`}
+                min={0}
+                max={999}
+                disabled={isLoading || !formData.kanjiKenteiLevel || formData.kanjiKenteiLevel === 'none'}
+              />
+              <span className={formData.kanjiKenteiLevel && formData.kanjiKenteiLevel !== 'none' ? "text-gray-700" : "text-gray-400"}>回</span>
+            </div>
+            {formData.kanjiKenteiLevel && validatePassedCount(formData.passedCount) && (
+              <p className="text-sm text-red-600">{validatePassedCount(formData.passedCount)}</p>
+            )}
           </div>
 
           {/* エラーメッセージ */}

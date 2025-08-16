@@ -9,5 +9,6 @@ export interface ProfileFormData {
   profileText: string; // プロフィール文
   avatarUrl: string; // プロフィール画像のURL
   kanjiKenteiLevel: string; // 漢字検定の保持級
+  passedCount: number; // 漢字検定の合格回数
 }
 

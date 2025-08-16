@@ -5,6 +5,7 @@ import { CheckDisplayIdResponse } from '@/types/api/profile/response/CheckDispla
 import { GetUserProfileResponse } from '@/types/api/profile/response/GetUserProfileResponse';
 import { GetUserKanjiKenteiLevelsResponse } from '@/types/api/profile/response/GetUserKanjiKenteiLevelsResponse';
 import { GetUserBadgesResponse } from '@/types/api/profile/response/GetUserBadgesResponse';
+import { UpsertUserKanjiKenteiLevelRequest } from '@/types/api/profile/request/UpsertUserKanjiKenteiLevelRequest';
 
 /**
  * プロフィール関連API処理
@@ -216,6 +217,24 @@ export const profileService = {
     } catch (error) {
       console.error('User badges fetch error:', error);
       throw new Error('獲得バッジの取得に失敗しました');
+    }
+  },
+
+  /**
+   * ユーザーの漢字検定級別合格回数をupsert（新規作成/更新）
+   */
+  async upsertUserKanjiKenteiLevel(requestData: UpsertUserKanjiKenteiLevelRequest): Promise<void> {
+    try {
+      const { error } = await supabase
+        .from('user_kanji_kentei_level_count')
+        .upsert(requestData);
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('Upsert user kanji kentei level error:', error);
+      throw new Error('漢字検定級の合格回数の保存に失敗しました');
     }
   }
 } as const;

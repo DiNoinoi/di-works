@@ -21,7 +21,8 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:tailwindcss.com)",
       "WebFetch(domain:developer.mozilla.org)",
-      "mcp__serena__find_referencing_symbols"
+      "mcp__serena__find_referencing_symbols",
+      "WebFetch(domain:www.radix-ui.com)"
     ],
     "deny": []
   }
