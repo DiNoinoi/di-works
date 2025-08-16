@@ -6,7 +6,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Award, BookOpen, Trophy, Star, Calendar } from 'lucide-react';
 import { useLoginUserStore } from '@/stores/loginUserStore';
 import { profileService } from '@/services/api/profile';
-import { UserProfileBasicResponse } from '@/types/api/profile/response/UserProfileBasicResponse';
+import { GetUserProfileResponse } from '@/types/api/profile/response/GetUserProfileResponse';
 
 const kankenLevels = [
   { level: '1級', color: 'bg-purple-600', passed: 3 },
@@ -63,7 +63,7 @@ const certifiedQuizzes = [
 
 export function UserProfile() {
   const { userId } = useLoginUserStore();
-  const [profileData, setProfileData] = useState<UserProfileBasicResponse | null>(null);
+  const [profileData, setProfileData] = useState<GetUserProfileResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -77,7 +77,7 @@ export function UserProfile() {
 
       try {
         setIsLoading(true);
-        const data = await profileService.getProfileBasic(userId);
+        const data = await profileService.getUserProfile(userId);
         setProfileData(data);
         setError(null);
       } catch (err) {
@@ -152,7 +152,23 @@ export function UserProfile() {
 
               <div className="flex-1 space-y-4">
                 <div>
-                  <h1 className="text-2xl font-bold">{profileData.user_name}</h1>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <h1 className="text-2xl font-bold">{profileData.user_name}</h1>
+                    {/* 称号バッジ */}
+                    {profileData.title && (
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1 text-sm font-semibold flex items-center rounded-full">
+                            <Star className="w-3 h-3 mr-1" />
+                            <span className="translate-y-px">{profileData.title.name}</span>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{profileData.title.description}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </div>
                   <p className="text-gray-600">@{profileData.display_id}</p>
                   {profileData.profile_text && (
                     <p className="mt-2 text-gray-700">{profileData.profile_text}</p>
@@ -191,8 +207,8 @@ export function UserProfile() {
                 <Tooltip key={level.level}>
                   <TooltipTrigger asChild>
                     <div className={`relative p-4 rounded-lg border-2 transition-all cursor-pointer ${level.passed > 0
-                        ? `${level.color} text-white border-transparent shadow-md`
-                        : 'bg-gray-100 text-gray-400 border-gray-300'
+                      ? `${level.color} text-white border-transparent shadow-md`
+                      : 'bg-gray-100 text-gray-400 border-gray-300'
                       }`}>
                       <div className="text-center">
                         <div className="font-bold text-lg">{level.level}</div>
@@ -272,7 +288,7 @@ export function UserProfile() {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-purple-600">
-                  {profileData.answer_count > 0 
+                  {profileData.answer_count > 0
                     ? `${((profileData.correct_count / profileData.answer_count) * 100).toFixed(1)}%`
                     : '0%'
                   }

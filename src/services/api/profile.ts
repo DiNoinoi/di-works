@@ -2,7 +2,7 @@ import { supabase } from '@/lib/supabase';
 import { CreateProfileRequest } from '@/types/api/profile/request/CreateProfileRequest';
 import { UpdateProfileRequest } from '@/types/api/profile/request/UpdateProfileRequest';
 import { CheckDisplayIdResponse } from '@/types/api/profile/response/CheckDisplayIdResponse';
-import { UserProfileBasicResponse } from '@/types/api/profile/response/UserProfileBasicResponse';
+import { GetUserProfileResponse } from '@/types/api/profile/response/GetUserProfileResponse';
 
 /**
  * プロフィール関連API処理
@@ -96,10 +96,11 @@ export const profileService = {
     }
   },
 
+
   /**
    * プロフィール基本情報取得
    */
-  async getProfileBasic(userId: string): Promise<UserProfileBasicResponse> {
+  async getUserProfile(userId: string): Promise<GetUserProfileResponse> {
     try {
       const { data, error } = await supabase
         .from('user_info')
@@ -113,7 +114,12 @@ export const profileService = {
           correct_count,
           post_count,
           follower_count,
-          following_count
+          following_count,
+          title:title_master(
+            title_id,
+            name,
+            description
+          )
         `)
         .eq('user_id', userId)
         .single();
@@ -122,10 +128,16 @@ export const profileService = {
         throw error;
       }
 
-      return data;
+      // 配列から単一オブジェクトに変換
+      const result: GetUserProfileResponse = {
+        ...data,
+        title: data.title && data.title.length > 0 ? data.title[0] : null
+      };
+
+      return result;
     } catch (error) {
-      console.error('Profile basic info fetch error:', error);
-      throw new Error('プロフィール基本情報の取得に失敗しました');
+      console.error('User profile fetch error:', error);
+      throw new Error('プロフィール情報の取得に失敗しました');
     }
   }
 } as const;

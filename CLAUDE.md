@@ -399,12 +399,12 @@ doc/
   - 基本情報: 表示名、ユーザーID、プロフィール文、登録日付
   - 統計情報: 解答数、正解数、投稿数、フォロワー数、フォロー数
 
-#### **Phase 2: 称号表示（実装中）**
+#### **Phase 2: 称号表示**
 - **データ範囲**: user_info + title_master（JOIN）
 - **API設計**: 単一API（LEFT JOIN使用）
 - **表示方法**: 名前の近くに色付きバッジで表示
 
-#### **Phase 3: 検定級別合格数表示**
+#### **Phase 3: 検定級別合格数表示（実装中）**
 - **データ範囲**: user_kanji_kentei_level_count + kanji_kentei_level_master（JOIN）
 - **API設計**: 単一API（JOIN使用）
 - **表示方法**: 級別の統計情報
