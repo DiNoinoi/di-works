@@ -236,5 +236,25 @@ export const profileService = {
       console.error('Upsert user kanji kentei level error:', error);
       throw new Error('漢字検定級の合格回数の保存に失敗しました');
     }
+  },
+
+  /**
+   * ユーザーの漢字検定級別合格回数を削除
+   */
+  async deleteUserKanjiKenteiLevel(userId: string, kanjiKenteiLevelId: string): Promise<void> {
+    try {
+      const { error } = await supabase
+        .from('user_kanji_kentei_level_count')
+        .delete()
+        .eq('user_id', userId)
+        .eq('kanji_kentei_level_id', kanjiKenteiLevelId);
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('Delete user kanji kentei level error:', error);
+      throw new Error('漢字検定級の削除に失敗しました');
+    }
   }
 } as const;

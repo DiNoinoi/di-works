@@ -229,13 +229,18 @@ export function ProfileEdit() {
             for (const [levelId, count] of Object.entries(editableLevels)) {
                 const originalLevel = originalLevels.find(level => level.kanji_kentei_level_id === levelId);
                 
-                // 新規追加された級 または 既存級で変更があった場合
-                if ((!originalLevel && count > 0) || (originalLevel && originalLevel.passed_count !== count && count > 0)) {
-                    await profileService.upsertUserKanjiKenteiLevel({
-                        user_id: userId,
-                        kanji_kentei_level_id: levelId,
-                        passed_count: count
-                    });
+                if (count === 0 && originalLevel) {
+                    // 0回に設定された既存の級は削除
+                    await profileService.deleteUserKanjiKenteiLevel(userId, levelId);
+                } else if (count > 0) {
+                    // 1回以上の場合はupsert（新規追加 または 既存級で変更があった場合）
+                    if (!originalLevel || originalLevel.passed_count !== count) {
+                        await profileService.upsertUserKanjiKenteiLevel({
+                            user_id: userId,
+                            kanji_kentei_level_id: levelId,
+                            passed_count: count
+                        });
+                    }
                 }
             }
 
