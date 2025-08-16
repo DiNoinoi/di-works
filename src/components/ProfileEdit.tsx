@@ -116,7 +116,7 @@ export function ProfileEdit() {
     ];
 
     // 既に追加されている級を除外した選択肢
-    const availableOptions = kanjiKenteiOptions.filter(option => 
+    const availableOptions = kanjiKenteiOptions.filter(option =>
         !existingLevels.some(level => level.kanji_kentei_level_id === option.value)
     );
 
@@ -228,7 +228,7 @@ export function ProfileEdit() {
             // 既存の級で変更された合格回数を更新 + 新規追加された級を保存
             for (const [levelId, count] of Object.entries(editableLevels)) {
                 const originalLevel = originalLevels.find(level => level.kanji_kentei_level_id === levelId);
-                
+
                 if (count === 0 && originalLevel) {
                     // 0回に設定された既存の級は削除
                     await profileService.deleteUserKanjiKenteiLevel(userId, levelId);
@@ -453,7 +453,7 @@ export function ProfileEdit() {
                                     existingLevels.map((level) => (
                                         <div
                                             key={level.kanji_kentei_level_id}
-                                            className={`${PROFILE_LEVEL_COLORS[level.kanji_kentei_level_id]} text-white text-sm px-4 py-2 inline-flex items-center gap-2 mr-3 mb-2 rounded-lg cursor-pointer hover:opacity-90 transition-opacity h-10`}
+                                            className={`${PROFILE_LEVEL_COLORS[level.kanji_kentei_level_id]} text-white text-sm px-4 py-2 inline-flex items-center gap-2 mr-3 mb-2 rounded-lg h-10 cursor-default`}
                                             onClick={() => setActiveEditLevel(activeEditLevel === level.kanji_kentei_level_id ? null : level.kanji_kentei_level_id)}
                                         >
                                             <span className="font-semibold translate-y-px">{level.kanji_kentei_level_name}</span>
