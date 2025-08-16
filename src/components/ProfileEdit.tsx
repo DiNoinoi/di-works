@@ -10,7 +10,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ArrowLeft, Save, Upload } from 'lucide-react';
 import { getInputClasses, getSelectClasses, getTextareaClasses, getPrimaryButtonClasses, PROFILE_LEVEL_COLORS } from '@/constants/colors';
 import { KANJI_KENTEI_LEVEL_NAME, KANJI_KENTEI_LEVEL_ID } from '@/constants/kanjiLevels';
-import { Badge } from '@/components/ui/badge';
 import { GetUserKanjiKenteiLevelsResponse } from '@/types/api/profile/response/GetUserKanjiKenteiLevelsResponse';
 import { useLoginUserStore } from '@/stores/loginUserStore';
 import { profileService } from '@/services/api/profile';
@@ -37,6 +36,9 @@ export function ProfileEdit() {
     const [error, setError] = useState('');
     const [profileData, setProfileData] = useState<GetUserProfileResponse | null>(null);
     const [existingLevels, setExistingLevels] = useState<GetUserKanjiKenteiLevelsResponse[]>([]);
+    const [originalLevels, setOriginalLevels] = useState<GetUserKanjiKenteiLevelsResponse[]>([]); // 初期状態を保持
+    const [editableLevels, setEditableLevels] = useState<{ [key: string]: number }>({});
+    const [activeEditLevel, setActiveEditLevel] = useState<string | null>(null);
 
     const [formData, setFormData] = useState<ProfileEditFormData>({
         displayId: '',
@@ -49,61 +51,83 @@ export function ProfileEdit() {
         passedCount: 0
     });
 
-    // 漢字検定級の選択肢
+    // 漢字検定級の選択肢（DBのlevel_orderに対応）
     const kanjiKenteiOptions = [
         {
-            value: 'none',
-            label: '持っていない'
-        },
-        {
             value: KANJI_KENTEI_LEVEL_ID.LEVEL_10,
-            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_10
+            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_10,
+            order: 1
         },
         {
             value: KANJI_KENTEI_LEVEL_ID.LEVEL_9,
-            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_9
+            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_9,
+            order: 2
         },
         {
             value: KANJI_KENTEI_LEVEL_ID.LEVEL_8,
-            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_8
+            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_8,
+            order: 3
         },
         {
             value: KANJI_KENTEI_LEVEL_ID.LEVEL_7,
-            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_7
+            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_7,
+            order: 4
         },
         {
             value: KANJI_KENTEI_LEVEL_ID.LEVEL_6,
-            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_6
+            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_6,
+            order: 5
         },
         {
             value: KANJI_KENTEI_LEVEL_ID.LEVEL_5,
-            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_5
+            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_5,
+            order: 6
         },
         {
             value: KANJI_KENTEI_LEVEL_ID.LEVEL_4,
-            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_4
+            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_4,
+            order: 7
         },
         {
             value: KANJI_KENTEI_LEVEL_ID.LEVEL_3,
-            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_3
+            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_3,
+            order: 8
         },
         {
             value: KANJI_KENTEI_LEVEL_ID.LEVEL_PRE2,
-            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_PRE2
+            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_PRE2,
+            order: 9
         },
         {
             value: KANJI_KENTEI_LEVEL_ID.LEVEL_2,
-            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_2
+            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_2,
+            order: 10
         },
         {
             value: KANJI_KENTEI_LEVEL_ID.LEVEL_PRE1,
-            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_PRE1
+            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_PRE1,
+            order: 11
         },
         {
             value: KANJI_KENTEI_LEVEL_ID.LEVEL_1,
-            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_1
+            label: KANJI_KENTEI_LEVEL_NAME.LEVEL_1,
+            order: 12
         }
     ];
+
+    // 既に追加されている級を除外した選択肢
+    const availableOptions = kanjiKenteiOptions.filter(option => 
+        !existingLevels.some(level => level.kanji_kentei_level_id === option.value)
+    );
+
+    // 級をソートする関数（難しい級が上位に表示されるよう降順）
+    const sortLevelsByOrder = (levels: GetUserKanjiKenteiLevelsResponse[]) => {
+        return [...levels].sort((a, b) => {
+            const aOrder = kanjiKenteiOptions.find(opt => opt.value === a.kanji_kentei_level_id)?.order || 0;
+            const bOrder = kanjiKenteiOptions.find(opt => opt.value === b.kanji_kentei_level_id)?.order || 0;
+            return bOrder - aOrder; // 降順ソート（1級→準1級→2級...の順）
+        });
+    };
 
     // プロフィールデータ取得
     useEffect(() => {
@@ -119,6 +143,14 @@ export function ProfileEdit() {
 
                 setProfileData(profile);
                 setExistingLevels(levels);
+                setOriginalLevels(levels); // 初期状態を保存
+
+                // 既存の級データを編集可能な状態に設定
+                const levelCounts: { [key: string]: number } = {};
+                levels.forEach(level => {
+                    levelCounts[level.kanji_kentei_level_id] = level.passed_count;
+                });
+                setEditableLevels(levelCounts);
 
                 // フォームデータに設定
                 setFormData({
@@ -193,14 +225,20 @@ export function ProfileEdit() {
                 profile_text: formData.profileText || undefined
             });
 
-            // 級が選択されていて合格回数が1以上の場合、合格回数も更新
-            if (formData.kanjiKenteiLevel && formData.kanjiKenteiLevel !== 'none' && formData.passedCount > 0) {
-                await profileService.upsertUserKanjiKenteiLevel({
-                    user_id: userId,
-                    kanji_kentei_level_id: formData.kanjiKenteiLevel,
-                    passed_count: formData.passedCount
-                });
+            // 既存の級で変更された合格回数を更新 + 新規追加された級を保存
+            for (const [levelId, count] of Object.entries(editableLevels)) {
+                const originalLevel = originalLevels.find(level => level.kanji_kentei_level_id === levelId);
+                
+                // 新規追加された級 または 既存級で変更があった場合
+                if ((!originalLevel && count > 0) || (originalLevel && originalLevel.passed_count !== count && count > 0)) {
+                    await profileService.upsertUserKanjiKenteiLevel({
+                        user_id: userId,
+                        kanji_kentei_level_id: levelId,
+                        passed_count: count
+                    });
+                }
             }
+
 
             // プロフィール更新完了後、プロフィール画面に戻る
             navigate('/profile');
@@ -360,7 +398,7 @@ export function ProfileEdit() {
                                             <SelectValue placeholder="級を選択" />
                                         </SelectTrigger>
                                         <SelectContent className="border border-gray-300" position="popper">
-                                            {kanjiKenteiOptions.map((option) => (
+                                            {availableOptions.map((option) => (
                                                 <SelectItem key={option.value} value={option.value}>
                                                     {option.label}
                                                 </SelectItem>
@@ -369,31 +407,38 @@ export function ProfileEdit() {
                                     </Select>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="passedCount" className="text-sm">選択した級の合格回数</Label>
-                                    <div className="flex items-center gap-1">
-                                        <Input
-                                            id="passedCount"
-                                            type="number"
-                                            value={formData.kanjiKenteiLevel && formData.kanjiKenteiLevel !== 'none' ? formData.passedCount : 0}
-                                            onChange={(e) => {
-                                                const count = parseInt(e.target.value) || 0;
-                                                updateFormData('passedCount', count);
-                                                if (count === 0) {
-                                                    updateFormData('kanjiKenteiLevel', '');
-                                                }
-                                            }}
-                                            className={`${getInputClasses()} w-20 ${!formData.kanjiKenteiLevel || formData.kanjiKenteiLevel === 'none' ? 'text-gray-400' : ''}`}
-                                            min={0}
-                                            max={999}
-                                            disabled={isLoading || !formData.kanjiKenteiLevel || formData.kanjiKenteiLevel === 'none'}
-                                        />
-                                        <span className={formData.kanjiKenteiLevel && formData.kanjiKenteiLevel !== 'none' ? "text-gray-700" : "text-gray-400"}>回</span>
-                                    </div>
-                                    {formData.kanjiKenteiLevel && validatePassedCount(formData.passedCount) && (
-                                        <p className="text-sm text-red-600">{validatePassedCount(formData.passedCount)}</p>
-                                    )}
-                                </div>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                        if (formData.kanjiKenteiLevel) {
+                                            // 新しい級を追加
+                                            const selectedOption = kanjiKenteiOptions.find(opt => opt.value === formData.kanjiKenteiLevel);
+                                            if (selectedOption) {
+                                                const newLevel = {
+                                                    kanji_kentei_level_id: formData.kanjiKenteiLevel,
+                                                    kanji_kentei_level_name: selectedOption.label,
+                                                    passed_count: 1,
+                                                    level_order: selectedOption.order
+                                                };
+                                                // 新しい級を追加してソート
+                                                const updatedLevels = sortLevelsByOrder([...existingLevels, newLevel]);
+                                                setExistingLevels(updatedLevels);
+                                                setEditableLevels(prev => ({
+                                                    ...prev,
+                                                    [formData.kanjiKenteiLevel]: 1
+                                                }));
+                                                // フォームをリセット
+                                                updateFormData('kanjiKenteiLevel', '');
+                                            }
+                                        }
+                                    }}
+                                    disabled={isLoading || !formData.kanjiKenteiLevel}
+                                    className="border-gray-300 w-32"
+                                >
+                                    追加
+                                </Button>
                             </div>
 
                             {/* 右側：取得済み級バッジ（5/7の幅） */}
@@ -401,13 +446,54 @@ export function ProfileEdit() {
                                 <Label className="text-sm">実績</Label>
                                 {existingLevels.length > 0 ? (
                                     existingLevels.map((level) => (
-                                        <Badge
+                                        <div
                                             key={level.kanji_kentei_level_id}
-                                            className={`${PROFILE_LEVEL_COLORS[level.kanji_kentei_level_id]} text-white text-sm px-4 py-2 inline-flex items-center gap-2 mr-3 mb-2 rounded-lg`}
+                                            className={`${PROFILE_LEVEL_COLORS[level.kanji_kentei_level_id]} text-white text-sm px-4 py-2 inline-flex items-center gap-2 mr-3 mb-2 rounded-lg cursor-pointer hover:opacity-90 transition-opacity h-10`}
+                                            onClick={() => setActiveEditLevel(activeEditLevel === level.kanji_kentei_level_id ? null : level.kanji_kentei_level_id)}
                                         >
                                             <span className="font-semibold translate-y-px">{level.kanji_kentei_level_name}</span>
-                                            <span className="text-sm opacity-90 translate-y-px">{level.passed_count}回合格</span>
-                                        </Badge>
+                                            <span className="text-sm opacity-90 translate-y-px">
+                                                {editableLevels[level.kanji_kentei_level_id] ?? level.passed_count}回合格
+                                            </span>
+
+                                            {/* 矢印ボタン */}
+                                            <div className="inline-flex flex-col ml-2 h-8 justify-center">
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    className="h-4 w-4 p-0 text-white hover:bg-white/20 flex items-center justify-center shrink-0"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        const currentCount = editableLevels[level.kanji_kentei_level_id] ?? level.passed_count;
+                                                        setEditableLevels(prev => ({
+                                                            ...prev,
+                                                            [level.kanji_kentei_level_id]: Math.min(999, currentCount + 1)
+                                                        }));
+                                                    }}
+                                                    disabled={isLoading}
+                                                >
+                                                    <div className="w-0 h-0 border-l-4 border-r-4 border-b-4 border-l-transparent border-r-transparent border-b-white"></div>
+                                                </Button>
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    className="h-4 w-4 p-0 text-white hover:bg-white/20 flex items-center justify-center shrink-0"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        const currentCount = editableLevels[level.kanji_kentei_level_id] ?? level.passed_count;
+                                                        setEditableLevels(prev => ({
+                                                            ...prev,
+                                                            [level.kanji_kentei_level_id]: Math.max(0, currentCount - 1)
+                                                        }));
+                                                    }}
+                                                    disabled={isLoading}
+                                                >
+                                                    <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-white"></div>
+                                                </Button>
+                                            </div>
+                                        </div>
                                     ))
                                 ) : (
                                     <p className="text-sm text-gray-500">まだ合格級がありません</p>
