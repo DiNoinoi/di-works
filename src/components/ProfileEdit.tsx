@@ -374,10 +374,10 @@ export function ProfileEdit() {
                 </CardContent>
             </Card>
 
-            {/* 漢字検定級の管理 */}
+            {/* 漢字検定保持級の管理 */}
             <Card>
                 <CardHeader>
-                    <CardTitle>漢字検定級の管理</CardTitle>
+                    <CardTitle>漢字検定保持級の管理</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
