@@ -397,10 +397,10 @@ export function ProfileEdit() {
                                                 updateFormData('passedCount', 0);
                                             }
                                         }}
-                                        disabled={isLoading}
+                                        disabled={isLoading || availableOptions.length === 0}
                                     >
-                                        <SelectTrigger className={`${getSelectClasses()} w-32 hover:bg-transparent focus:bg-transparent`}>
-                                            <SelectValue placeholder="級を選択" />
+                                        <SelectTrigger className={`${getSelectClasses()} w-32 hover:bg-transparent focus:bg-transparent disabled:cursor-default`}>
+                                            <SelectValue placeholder={availableOptions.length === 0 ? "すべて追加済み" : "級を選択"} />
                                         </SelectTrigger>
                                         <SelectContent className="border border-gray-300" position="popper">
                                             {availableOptions.map((option) => (
@@ -439,8 +439,8 @@ export function ProfileEdit() {
                                             }
                                         }
                                     }}
-                                    disabled={isLoading || !formData.kanjiKenteiLevel}
-                                    className="border-gray-300 w-32"
+                                    disabled={isLoading || !formData.kanjiKenteiLevel || availableOptions.length === 0}
+                                    className="border-gray-300 w-32 disabled:cursor-default"
                                 >
                                     追加
                                 </Button>
