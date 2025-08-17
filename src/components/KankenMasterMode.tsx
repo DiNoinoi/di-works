@@ -6,12 +6,14 @@ import { Label } from '@/components/ui/label';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
 import { Eye } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useUIStore } from '@/stores/uiStore';
 
 // 新しい統合constants
 import { OFFICIAL_KANJI_LEVELS, KANJI_KENTEI_LEVEL_NAME } from '@/constants/kanjiLevels';
 import { FILTER_MODES } from '@/constants/filterModes';
 import { JIS_LEVELS, JIS_LEVEL_LABELS, JIS_LEVEL_4 } from '@/constants/jisLevels';
-import { LEVEL_COLORS, getSelectClasses } from '@/constants/colors';
+import { LEVEL_COLORS, getSelectClasses, getPrimarySwitchClasses } from '@/constants/colors';
 import { KanjiProcessor } from './KanjiProcessor';
 import type { MasterModeSettings, FilterMode, UnassignedJISLevel } from '../types/settings';
 
@@ -28,6 +30,9 @@ export function KankenMasterMode({ onSettingsChange, currentSettings }: KankenMa
   const [filterMode, setFilterMode] = useState<FilterMode>(currentSettings?.filterMode || FILTER_MODES.ALL);
   const [showUnassigned, setShowUnassigned] = useState(currentSettings?.showUnassigned || false);
   const [unassignedJisLevel, setUnassignedJisLevel] = useState<UnassignedJISLevel>(currentSettings?.unassignedJisLevel || JIS_LEVEL_4);
+
+  // UI表示状態管理
+  const { isMasterModeVisible, toggleMasterModeVisible, isMasterModeEnabled, toggleMasterMode } = useUIStore();
 
   // 設定が変更されたときにコールバックを呼ぶ
   useEffect(() => {
@@ -53,9 +58,30 @@ export function KankenMasterMode({ onSettingsChange, currentSettings }: KankenMa
         {/* 漢字マスターモード説明 */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Eye className="w-5 h-5" />
-              漢検マスターモード
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <Eye className="w-5 h-5" />
+                  漢検マスターモード
+                </div>
+                <Switch
+                  id="master-mode-toggle"
+                  checked={isMasterModeEnabled()}
+                  onCheckedChange={toggleMasterMode}
+                  className={getPrimarySwitchClasses()}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="home-display-toggle" className="text-sm text-gray-600">
+                  {isMasterModeVisible() ? 'ホームに表示' : 'ホームに非表示'}
+                </Label>
+                <Switch
+                  id="home-display-toggle"
+                  checked={isMasterModeVisible()}
+                  onCheckedChange={toggleMasterModeVisible}
+                  className={getPrimarySwitchClasses()}
+                />
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent>

@@ -101,6 +101,14 @@ export const getPrimaryButtonClasses = () => [
 ].join(' ');
 
 /**
+ * プライマリSwitchのTailwindクラス文字列を取得
+ */
+export const getPrimarySwitchClasses = () => [
+  'data-[state=checked]:bg-blue-500',
+  'data-[state=unchecked]:bg-gray-200'
+].join(' ');
+
+/**
  * プロフィールページ用の級別バッジ色定義
  */
 export const PROFILE_LEVEL_COLORS: { [key: string]: string } = {

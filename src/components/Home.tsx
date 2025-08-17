@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MessageCircle, BookOpen, Eye, Settings as SettingsIcon, FileText, EyeOff } from 'lucide-react';
+import { MessageCircle, BookOpen, Eye, FileText, EyeOff, X } from 'lucide-react';
 import { OFFICIAL_KANJI_LEVELS } from '@/constants/kanjiLevels';
 import { FILTER_MODES } from '@/constants/filterModes';
 import { JIS_LEVELS, JIS_LEVEL_LABELS } from '@/constants/jisLevels';
@@ -14,7 +14,8 @@ import { useUserSettings } from '@/hooks/useUserSettings';
 import { useKanjiData } from '@/hooks/useKanjiData';
 import { APP_NAME } from '@/constants/app';
 import { useLoginUserStore } from '@/stores/loginUserStore';
-import { getSelectClasses } from '@/constants/colors';
+import { useUIStore } from '@/stores/uiStore';
+import { getSelectClasses, getPrimarySwitchClasses } from '@/constants/colors';
 import type { FilterMode, UnassignedJISLevel } from '../types/settings';
 
 /**
@@ -27,9 +28,7 @@ export function Home() {
 
   // 統合されたユーザー設定管理hook
   const {
-    masterModeEnabled,
     masterModeSettings,
-    toggleMasterMode,
     updateMasterModeSettings,
     updateShowUnassigned,
     updateUnassignedJisLevel
@@ -37,6 +36,9 @@ export function Home() {
 
   // 認証状態管理
   const isLoggedIn = useLoginUserStore(state => state.userId !== '');
+
+  // UI表示状態管理
+  const { isMasterModeVisible, toggleMasterModeVisible, isMasterModeEnabled, toggleMasterMode } = useUIStore();
 
   const feedPosts = [
     {
@@ -122,12 +124,13 @@ export function Home() {
       </div>
 
       {/* 漢検マスターモードコントロール */}
-      <Card className="w-full max-w-2xl mx-auto">
-        <CardContent className="pt-4">
+      {isMasterModeVisible() && (
+        <Card className="w-full max-w-2xl mx-auto">
+        <CardContent className="pt-4 [&:last-child]:pb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
-                {masterModeEnabled ? (
+                {isMasterModeEnabled() ? (
                   <Eye className="w-5 h-5 text-blue-600" />
                 ) : (
                   <EyeOff className="w-5 h-5 text-gray-400" />
@@ -138,27 +141,24 @@ export function Home() {
               </div>
               <Switch
                 id="master-mode"
-                checked={masterModeEnabled}
+                checked={isMasterModeEnabled()}
                 onCheckedChange={toggleMasterMode}
+                className={getPrimarySwitchClasses()}
               />
             </div>
 
-            {masterModeEnabled && (
-              <Button
-                asChild
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <Link to="/kanken-master">
-                  <SettingsIcon className="w-4 h-4" />
-                  設定
-                </Link>
-              </Button>
-            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleMasterModeVisible}
+              className="flex items-center gap-1 text-gray-500 hover:text-gray-700"
+            >
+              <X className="w-4 h-4" />
+              非表示
+            </Button>
           </div>
 
-          {masterModeEnabled && (
+          {isMasterModeEnabled() && (
             <div className="mt-3 p-3 bg-blue-50 rounded-lg">
               <p className="text-sm text-blue-700 mb-3">
                 投稿内の漢字が配当級別に色分け表示されます。漢字にカーソルを合わせると詳細情報が表示されます。
@@ -209,7 +209,7 @@ export function Home() {
                     id="unassigned-toggle"
                     checked={masterModeSettings.showUnassigned}
                     onCheckedChange={updateShowUnassigned}
-                    className="scale-75"
+                    className={`scale-75 ${getPrimarySwitchClasses()}`}
                   />
                 </div>
 
@@ -235,7 +235,8 @@ export function Home() {
             </div>
           )}
         </CardContent>
-      </Card>
+        </Card>
+      )}
 
       {feedPosts.map((post) => (
         <Card key={post.id} className="w-full max-w-2xl mx-auto">
@@ -254,7 +255,7 @@ export function Home() {
 
                 <div className="mt-2">
                   <div className="mb-3">
-                    {masterModeEnabled ? (
+                    {isMasterModeEnabled() ? (
                       <KanjiProcessor
                         text={post.content}
                         userLevel={masterModeSettings.userLevel}
@@ -291,7 +292,7 @@ export function Home() {
                         </div>
                       </div>
                       <div className="font-medium text-blue-900">
-                        {masterModeEnabled ? (
+                        {isMasterModeEnabled() ? (
                           <KanjiProcessor
                             text={post.quiz.question}
                             userLevel={masterModeSettings.userLevel}

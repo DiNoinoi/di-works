@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { User, ChevronDown, Settings as SettingsIcon } from 'lucide-react';
+import { User, ChevronDown, Settings as SettingsIcon, Eye } from 'lucide-react';
 import { authService } from '@/services/api/auth';
 import { APP_NAME } from '@/constants/app';
 
@@ -106,32 +106,41 @@ export function Header({ navigationItems }: HeaderProps) {
               
               <DropdownMenuContent 
                 align="end" 
-                className="w-48 z-50"
+                className="w-56 z-50 border-gray-300 p-0"
                 sideOffset={5}
                 avoidCollisions={true}
               >
                 <DropdownMenuItem asChild>
-                  <Link to="/profile" className="flex items-center gap-2">
+                  <Link to="/profile" className="flex items-center gap-2 cursor-pointer py-3">
                     <User className="w-4 h-4" />
                     プロフィール
                   </Link>
                 </DropdownMenuItem>
                 
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className="my-0" />
                 
                 <DropdownMenuItem asChild>
-                  <Link to="/settings" className="flex items-center gap-2">
+                  <Link to="/kanken-master" className="flex items-center gap-2 cursor-pointer py-3">
+                    <Eye className="w-4 h-4" />
+                    漢検マスターモード設定
+                  </Link>
+                </DropdownMenuItem>
+                
+                <DropdownMenuSeparator className="my-0" />
+                
+                <DropdownMenuItem asChild>
+                  <Link to="/settings" className="flex items-center gap-2 cursor-pointer py-3">
                     <SettingsIcon className="w-4 h-4" />
                     設定
                   </Link>
                 </DropdownMenuItem>
                 
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className="my-0" />
                 
                 <DropdownMenuItem 
                   onClick={handleLogout}
                   variant="destructive"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 cursor-pointer py-3"
                 >
                   <span>ログアウト</span>
                 </DropdownMenuItem>

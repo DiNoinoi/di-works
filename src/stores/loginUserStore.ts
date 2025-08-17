@@ -10,10 +10,8 @@ export const useLoginUserStore = create<LoginUserState>()(
     (set, get) => ({
       /** ログイン中のユーザーID */
       userId: '',
-      
       /** ログイン済みであるかを判定 */
       isLoggedIn: () => get().userId !== '',
-      
       /** ユーザーIDをローカルストレージに保存 */
       setLoginUser: (userId: string) => {
         try {
@@ -24,7 +22,6 @@ export const useLoginUserStore = create<LoginUserState>()(
           throw new Error('ログインの保存に失敗しました。再度お試しください。')
         }
       },
-      
       /** ユーザーIDをローカルストレージからリセット */
       resetLoginUser: () => {
         set({ userId: '' })
