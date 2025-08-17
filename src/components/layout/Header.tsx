@@ -111,38 +111,40 @@ export function Header({ navigationItems }: HeaderProps) {
                 avoidCollisions={true}
               >
                 <DropdownMenuItem asChild>
-                  <Link to="/profile" className="flex items-center gap-2 cursor-pointer py-3">
-                    <User className="w-4 h-4" />
-                    プロフィール
+                  <Link to="/profile" className="cursor-pointer py-3 border-b border-gray-200 -mx-2">
+                    <div className="flex items-center gap-2 px-4">
+                      <User className="w-4 h-4" />
+                      プロフィール
+                    </div>
                   </Link>
                 </DropdownMenuItem>
-                
-                <DropdownMenuSeparator className="my-0" />
                 
                 <DropdownMenuItem asChild>
-                  <Link to="/kanken-master" className="flex items-center gap-2 cursor-pointer py-3">
-                    <Eye className="w-4 h-4" />
-                    漢検マスターモード設定
+                  <Link to="/kanken-master" className="cursor-pointer py-3 border-b border-gray-200 -mx-2">
+                    <div className="flex items-center gap-2 px-4">
+                      <Eye className="w-4 h-4" />
+                      漢検マスターモード設定
+                    </div>
                   </Link>
                 </DropdownMenuItem>
-                
-                <DropdownMenuSeparator className="my-0" />
                 
                 <DropdownMenuItem asChild>
-                  <Link to="/settings" className="flex items-center gap-2 cursor-pointer py-3">
-                    <SettingsIcon className="w-4 h-4" />
-                    設定
+                  <Link to="/settings" className="cursor-pointer py-3 border-b border-gray-200 -mx-2">
+                    <div className="flex items-center gap-2 px-4">
+                      <SettingsIcon className="w-4 h-4" />
+                      設定
+                    </div>
                   </Link>
                 </DropdownMenuItem>
-                
-                <DropdownMenuSeparator className="my-0" />
                 
                 <DropdownMenuItem 
                   onClick={handleLogout}
                   variant="destructive"
-                  className="flex items-center gap-2 cursor-pointer py-3"
+                  className="cursor-pointer py-3"
                 >
-                  <span>ログアウト</span>
+                  <div className="flex items-center gap-2 px-4">
+                    <span>ログアウト</span>
+                  </div>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
