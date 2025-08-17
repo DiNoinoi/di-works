@@ -13,6 +13,7 @@ import { useLoginUserStore } from '@/stores/loginUserStore';
 import { ProfileFormData } from '@/types/profile';
 import { profileService } from '@/services/api/profile';
 import { APP_NAME } from '@/constants/app';
+import { TITLE_ID } from '@/constants/titles';
 
 /**
  * プロフィール作成コンポーネント
@@ -189,7 +190,8 @@ export function ProfileSetup() {
         birth_date_public: formData.birthDatePublic,
         profile_text: formData.profileText || undefined,
         avatar_url: formData.avatarUrl || undefined,
-        kanji_kentei_level: (formData.kanjiKenteiLevel && formData.kanjiKenteiLevel !== 'none') ? formData.kanjiKenteiLevel : undefined
+        kanji_kentei_level: (formData.kanjiKenteiLevel && formData.kanjiKenteiLevel !== 'none') ? formData.kanjiKenteiLevel : undefined,
+        title_id: TITLE_ID.TITLE_0001
       });
 
       // 級が選択されていて合格回数が1以上の場合、合格回数も保存
@@ -297,7 +299,7 @@ export function ProfileSetup() {
                 disabled={isLoading}
               />
               <Label htmlFor="birthDatePublic" className="text-sm">
-                生年月日を公開する
+                生年月日の公開を許可する
               </Label>
             </div>
           )}

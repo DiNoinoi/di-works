@@ -131,10 +131,10 @@ export const profileService = {
         throw error;
       }
 
-      // 配列から単一オブジェクトに変換
+      // titleの処理（配列または単一オブジェクトの場合を処理）
       const result: GetUserProfileResponse = {
         ...data,
-        title: data.title && data.title.length > 0 ? data.title[0] : null
+        title: data.title ? (Array.isArray(data.title) ? data.title[0] : data.title) : null
       };
 
       return result;

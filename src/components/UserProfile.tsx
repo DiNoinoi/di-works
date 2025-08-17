@@ -136,7 +136,7 @@ export function UserProfile() {
                     {/* 称号バッジ */}
                     {profileData.title && (
                       <Tooltip>
-                        <TooltipTrigger>
+                        <TooltipTrigger asChild>
                           <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1 text-sm font-semibold flex items-center rounded-full">
                             <Star className="w-3 h-3 mr-1" />
                             <span className="translate-y-px">{profileData.title.name}</span>

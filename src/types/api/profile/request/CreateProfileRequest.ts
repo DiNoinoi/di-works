@@ -10,4 +10,5 @@ export interface CreateProfileRequest {
   profile_text?: string;
   avatar_url?: string;
   kanji_kentei_level?: string;
+  title_id?: string;
 }
