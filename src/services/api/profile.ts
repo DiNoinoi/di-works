@@ -172,8 +172,8 @@ export const profileService = {
         level_order: level.kanji_kentei_level_master.level_order,
         passed_count: level.passed_count
       })) || [])
-      // level_order降順でソート（高い級が先に）
-      .sort((a, b) => b.level_order - a.level_order);
+        // level_order降順でソート（高い級が先に）
+        .sort((a, b) => b.level_order - a.level_order);
 
       return result;
     } catch (error) {

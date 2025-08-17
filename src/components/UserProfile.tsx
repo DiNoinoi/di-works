@@ -40,7 +40,7 @@ export function UserProfile() {
           profileService.getUserKanjiKenteiLevels(userId),
           profileService.getUserBadges(userId)
         ]);
-        
+
         setProfileData(profileData);
         setKanjiKenteiLevels(levelsData);
         setUserBadges(badgesData);
@@ -137,9 +137,31 @@ export function UserProfile() {
                     {profileData.title && (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1 text-sm font-semibold flex items-center rounded-full">
-                            <Star className="w-3 h-3 mr-1" />
-                            <span className="translate-y-px">{profileData.title.name}</span>
+                          <div className="bg-gradient-to-r from-[#dbc090] to-[#d1b585] text-white px-3 py-1 text-sm font-semibold flex items-center rounded-full cursor-default relative">
+                            <svg className="absolute left-2 top-1/2 transform -translate-y-1/2 w-5 h-5 pointer-events-none" viewBox="-6 -6 36 36" fill="none">
+                              <defs>
+                                <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                  <stop offset="0%" style={{ stopColor: '#ffffff', stopOpacity: 1 }} />
+                                  <stop offset="25%" style={{ stopColor: '#fdfd88', stopOpacity: 1 }} />
+                                  <stop offset="60%" style={{ stopColor: '#f5d666', stopOpacity: 1 }} />
+                                  <stop offset="85%" style={{ stopColor: '#ffffdd', stopOpacity: 1 }} />
+                                  <stop offset="100%" style={{ stopColor: '#fffff5', stopOpacity: 1 }} />
+                                </linearGradient>
+                                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                                  <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                                  <feMerge>
+                                    <feMergeNode in="coloredBlur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                  </feMerge>
+                                </filter>
+                              </defs>
+                              <path
+                                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                                fill="url(#starGradient)"
+                                filter="url(#glow)"
+                              />
+                            </svg>
+                            <span className="translate-y-0.5 pl-4">{profileData.title.name}</span>
                           </div>
                         </TooltipTrigger>
                         <TooltipContent>
@@ -222,7 +244,7 @@ export function UserProfile() {
                   month: 'long',
                   day: 'numeric'
                 });
-                
+
                 return (
                   <Tooltip key={badge.badge_id}>
                     <TooltipTrigger asChild>
