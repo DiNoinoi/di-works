@@ -459,3 +459,53 @@ src/components/ProfileEdit.tsx         # 編集機能実装コンポーネント
 - 「持っていない」選択肢の提供
 
 このプロジェクトは学習目的のSNSアプリケーションであり、ユーザーの学習体験を最優先に考慮した実装を心がけること。
+
+## プロフィール画像アップロード機能の実装方針
+
+### 機能概要
+プロフィール編集画面にて、ユーザーが画像を400x400の正方形に切り取ってアバター画像として設定できる機能。
+
+### UI/UX設計
+#### 画像アップロードフロー
+1. **画像選択**: ファイル選択ダイアログで画像を選択
+2. **画像クロップ**: react-easy-cropを使用した切り取りダイアログ
+   - 400x400の正方形切り取り
+   - 円形オーバーレイで実際の表示範囲を確認
+   - ユーザーが手動で範囲指定可能
+3. **プレビュー更新**: 切り取り後に即座にアバター表示を更新
+
+#### ファイル制限
+- **対応形式**: image/jpeg, image/png, image/webp
+- **サイズ制限**: 2MB以下
+- **出力形式**: JPEG (品質90%)
+
+### 技術実装
+#### ファイル構成
+```
+src/components/ui/image-crop-dialog.tsx    # 汎用画像切り取りダイアログ
+src/services/api/storage.ts               # Supabaseストレージサービス
+src/types/api/profile/request/UpdateProfileRequest.ts  # avatar_url追加
+```
+
+#### Supabaseストレージ設計
+- **バケット**: avatars（既存・RLS設定済み）
+- **ファイルパス**: `{user_id}/avatar.{ext}`
+- **権限**: 本人のみ登録・更新・削除可能、閲覧は誰でも可能
+- **上書き**: 既存画像は自動削除してから新規アップロード
+
+#### API設計
+1. **storageService.uploadAvatar()**: 画像アップロード・既存削除
+2. **profileService.updateProfile()**: user_infoテーブルのavatar_url更新
+3. 両APIを順次実行してプロフィール更新完了
+
+#### 状態管理
+- ProfileEdit.tsxに画像アップロード状態を追加
+- フォームデータにavatarUrl反映
+- エラーハンドリング（ファイル形式・サイズ・アップロード失敗）
+
+### 実装手順
+1. Supabaseストレージサービス作成
+2. ImageCropDialog汎用コンポーネント作成
+3. UpdateProfileRequest型にavatar_url追加
+4. ProfileEdit.tsxに画像アップロード機能統合
+5. エラーハンドリング・バリデーション実装

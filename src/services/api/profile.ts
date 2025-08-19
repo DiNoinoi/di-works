@@ -112,6 +112,7 @@ export const profileService = {
           display_id,
           user_name,
           profile_text,
+          avatar_url,
           created_at,
           answer_count,
           correct_count,

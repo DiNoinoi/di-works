@@ -6,7 +6,6 @@ import { Label } from '@/components/ui/label';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
 import { Eye } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useUIStore } from '@/stores/uiStore';
 
 // 新しい統合constants

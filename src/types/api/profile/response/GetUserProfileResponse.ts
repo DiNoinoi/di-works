@@ -6,6 +6,7 @@ export interface GetUserProfileResponse {
   display_id: string;
   user_name: string;
   profile_text: string | null;
+  avatar_url: string | null;
   created_at: string;
   answer_count: number;
   correct_count: number;

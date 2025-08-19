@@ -13,6 +13,9 @@ import { KANJI_KENTEI_LEVEL_NAME, KANJI_KENTEI_LEVEL_ID } from '@/constants/kanj
 import { GetUserKanjiKenteiLevelsResponse } from '@/types/api/profile/response/GetUserKanjiKenteiLevelsResponse';
 import { useLoginUserStore } from '@/stores/loginUserStore';
 import { profileService } from '@/services/api/profile';
+import { storageService } from '@/services/api/storage';
+import { ImageCropDialog } from '@/components/ui/image-crop-dialog';
+import { SUPPORTED_IMAGE_TYPES } from '@/constants/imageUpload';
 import { GetUserProfileResponse } from '@/types/api/profile/response/GetUserProfileResponse';
 
 interface ProfileEditFormData {
@@ -39,6 +42,11 @@ export function ProfileEdit() {
     const [originalLevels, setOriginalLevels] = useState<GetUserKanjiKenteiLevelsResponse[]>([]); // 初期状態を保持
     const [editableLevels, setEditableLevels] = useState<{ [key: string]: number }>({});
     const [activeEditLevel, setActiveEditLevel] = useState<string | null>(null);
+
+    // 画像アップロード関連の状態
+    const [isImageCropDialogOpen, setIsImageCropDialogOpen] = useState(false);
+    const [selectedImageSrc, setSelectedImageSrc] = useState<string>('');
+    const [isImageUploading, setIsImageUploading] = useState(false);
 
     const [formData, setFormData] = useState<ProfileEditFormData>({
         displayId: '',
@@ -159,7 +167,7 @@ export function ProfileEdit() {
                     birthDate: '', // 現在のAPIでは取得できないため空
                     birthDatePublic: false,
                     profileText: profile.profile_text || '',
-                    avatarUrl: '',
+                    avatarUrl: profile.avatar_url || '', // 既存のアバターURLを設定
                     kanjiKenteiLevel: '',
                     passedCount: 1
                 });
@@ -189,6 +197,67 @@ export function ProfileEdit() {
     const validatePassedCount = (value: number): string => {
         if (value > 999) return '合格回数は999回以下で入力してください';
         return '';
+    };
+
+    /**
+     * 画像ファイル選択処理
+     * ファイルダイアログを開いて画像を選択
+     */
+    const handleImageSelect = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = SUPPORTED_IMAGE_TYPES.join(',');
+        input.onchange = (e) => {
+            const file = (e.target as HTMLInputElement).files?.[0];
+            if (!file) return;
+
+            // ファイル形式チェック
+            if (!SUPPORTED_IMAGE_TYPES.includes(file.type as any)) {
+                setError('JPEG、PNG、WebP形式の画像を選択してください');
+                return;
+            }
+
+            // ファイルを読み込んでプレビュー用のURLを作成
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const imageSrc = e.target?.result as string;
+                setSelectedImageSrc(imageSrc);
+                setIsImageCropDialogOpen(true);
+                setError(''); // エラーをクリア
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
+    };
+
+    /**
+     * 画像切り取り完了処理
+     * 切り取られた画像をSupabaseにアップロードしてプロフィールを更新
+     */
+    const handleImageCropComplete = async (croppedImageBlob: Blob) => {
+        if (!userId) return;
+
+        setIsImageUploading(true);
+        try {
+            // BlobをFileに変換
+            const file = new File([croppedImageBlob], 'avatar.jpg', { type: 'image/jpeg' });
+
+            // Supabaseストレージにアップロード
+            const avatarUrl = await storageService.uploadAvatar(userId, file);
+
+            // プロフィールのavatar_urlを更新
+            await profileService.updateProfile(userId, { avatar_url: avatarUrl });
+
+            // フォームデータを更新
+            updateFormData('avatarUrl', avatarUrl);
+
+            setError('');
+        } catch (error) {
+            console.error('画像アップロードエラー:', error);
+            setError('画像のアップロードに失敗しました');
+        } finally {
+            setIsImageUploading(false);
+        }
     };
 
     // フォーム値の更新
@@ -298,12 +367,17 @@ export function ProfileEdit() {
                             <AvatarImage src={formData.avatarUrl} alt={formData.userName} />
                             <AvatarFallback className="text-2xl">{formData.userName[0]}</AvatarFallback>
                         </Avatar>
-                        <Button variant="outline" size="sm" disabled>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleImageSelect}
+                            disabled={isImageUploading}
+                        >
                             <Upload className="w-4 h-4 mr-2" />
-                            画像を変更（未実装）
+                            {isImageUploading ? 'アップロード中...' : '画像を変更'}
                         </Button>
                         <p className="text-sm text-gray-500">
-                            現在の実装では画像変更はダミー表示です
+                            JPEG、PNG、WebP形式（編集後のサイズが2MB以下）
                         </p>
                     </div>
                 </CardContent>
@@ -536,6 +610,14 @@ export function ProfileEdit() {
                     </form>
                 </CardContent>
             </Card>
+
+            {/* 画像切り取りダイアログ */}
+            <ImageCropDialog
+                isOpen={isImageCropDialogOpen}
+                onClose={() => setIsImageCropDialogOpen(false)}
+                imageSrc={selectedImageSrc}
+                onCropComplete={handleImageCropComplete}
+            />
         </div>
     );
 }
