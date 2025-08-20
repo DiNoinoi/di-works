@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { KanjiProcessor } from '@/components/KanjiProcessor';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { FloatingPostButton } from '@/components/ui/floating-post-button';
+import { ProblemPostModal } from '@/components/modals/problem-post-modal';
+import { TextPostModal } from '@/components/modals/text-post-modal';
 import { MessageCircle, BookOpen, Eye, FileText, EyeOff, X } from 'lucide-react';
 import { OFFICIAL_KANJI_LEVELS } from '@/constants/kanjiLevels';
 import { FILTER_MODES } from '@/constants/filterModes';
@@ -39,6 +43,10 @@ export function Home() {
 
   // UI表示状態管理
   const { isMasterModeVisible, toggleMasterModeVisible, isMasterModeEnabled, toggleMasterMode } = useUIStore();
+
+  // モーダル状態管理
+  const [isProblemPostModalOpen, setIsProblemPostModalOpen] = useState(false);
+  const [isTextPostModalOpen, setIsTextPostModalOpen] = useState(false);
 
   const feedPosts = [
     {
@@ -338,6 +346,24 @@ export function Home() {
           </CardContent>
         </Card>
       ))}
+
+      {/* フローティング投稿ボタン（ログイン時のみ表示） */}
+      {isLoggedIn && (
+        <FloatingPostButton
+          onCreateProblemPost={() => setIsProblemPostModalOpen(true)}
+          onCreateTextPost={() => setIsTextPostModalOpen(true)}
+        />
+      )}
+
+      {/* モーダル */}
+      <ProblemPostModal
+        isOpen={isProblemPostModalOpen}
+        onClose={() => setIsProblemPostModalOpen(false)}
+      />
+      <TextPostModal
+        isOpen={isTextPostModalOpen}
+        onClose={() => setIsTextPostModalOpen(false)}
+      />
     </div>
   );
 }
