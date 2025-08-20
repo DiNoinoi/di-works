@@ -47,6 +47,7 @@ src/
 │   │   ├── ResetPassword.tsx    # /auth/reset - パスワードリセットラッパー
 │   │   ├── NewPassword.tsx      # /auth/new-password - 新パスワード設定ラッパー
 │   │   └── ProfileSetup.tsx     # /auth/profile-setup - プロフィール作成ラッパー
+│   ├── ProfileEdit.tsx           # /profile/edit - プロフィール編集ページラッパー
 │   └── ... (その他ページ)
 ├── components/                  # 機能実装コンポーネント
 │   ├── layout/                  # レイアウトコンポーネント
@@ -59,6 +60,7 @@ src/
 │   │   ├── button.tsx
 │   │   ├── card.tsx
 │   │   ├── badge.tsx
+│   │   ├── image-crop-dialog.tsx  # 画像切り取りダイアログ
 │   │   └── ... (その他多数)
 │   ├── Home.tsx                 # ホームページ機能実装
 │   ├── KankenMasterMode.tsx     # 漢検マスターモード設定
@@ -68,6 +70,7 @@ src/
 │   ├── Settings.tsx             # 設定画面
 │   ├── UserDictionary.tsx       # ユーザー辞書
 │   ├── UserProfile.tsx          # プロフィール
+│   ├── ProfileEdit.tsx          # プロフィール編集
 │   ├── WeakKanjiList.tsx        # 苦手漢字リスト
 │   └── auth/                    # 認証関連コンポーネント
 │       ├── Login.tsx            # ログイン機能実装
@@ -80,6 +83,7 @@ src/
 │   ├── kanjiLevels.ts           # 漢字級定義
 │   ├── filterModes.ts           # フィルタモード
 │   ├── jisLevels.ts             # JIS水準定義
+│   ├── imageUpload.ts           # 画像アップロード制約定数
 │   └── navigation.ts            # ナビゲーション設定
 ├── hooks/                       # カスタムフック
 │   ├── useUserSettings.ts       # ユーザー設定管理
@@ -88,7 +92,8 @@ src/
 │   ├── kanjiService.ts          # 漢字データアクセス層
 │   └── api/                     # API層
 │       ├── auth.ts              # Supabase認証API
-│       └── profile.ts           # プロフィール関連API
+│       ├── profile.ts           # プロフィール関連API
+│       └── storage.ts           # Supabaseストレージサービス（画像アップロード）
 ├── stores/                      # 状態管理（Zustand）
 │   └── loginUserStore.ts        # ログインユーザー状態管理
 ├── lib/                         # 外部ライブラリ設定
@@ -320,6 +325,7 @@ src/
 ```
 / - ホーム（フィード表示）
 /profile - プロフィール
+/profile/edit - プロフィール編集
 /settings - 設定
 /posts/create - 投稿作成
 /posts/:id - 投稿詳細
@@ -406,106 +412,49 @@ doc/
 - **パフォーマンス**: 並列API呼び出しでロード時間短縮
 - **UI一貫性**: constants/colors.tsの色定数使用
 
-## プロフィール編集機能の実装方針
+## プロフィール画像アップロード機能
 
 ### 機能概要
-ユーザーがプロフィール情報を更新できる編集画面を提供。基本情報と漢字検定級の合格回数を編集可能。
-
-### ルーティング設計
-```
-/profile/edit - プロフィール編集画面
-```
-- 既存の`/profile`画面から「編集」ボタンで遷移
-- React Router の`useNavigate()`を使用
-
-### UI/UX設計
-#### レイアウト構成
-- **1カラム中央配置**: デザインの3カラム構成を簡素化
-- **画像編集セクション**: 最上部に配置（現時点ではダミー実装）
-- **基本情報セクション**: 表示名、生年月日、プロフィール文
-- **漢字検定級セクション**: 級選択 + 合格回数入力（プロフィール作成画面と同様）
-
-#### 除外機能
-- メールアドレス編集（除外）
-- パスワード変更（別途実装予定のため除外）
-- 現在の保持級・獲得バッジ表示（除外）
-- 漢字検定級のクイズ機能（将来実装予定のため除外）
-
-### API設計
-#### 更新処理のフロー
-1. **基本情報更新**: 既存の`updateProfile` API使用
-2. **合格回数更新**: 既存の`upsertUserKanjiKenteiLevel` API使用
-3. 2つのAPIを順次実行して完全なプロフィール更新を実現
-
-#### 使用API
-- `profileService.updateProfile()`: user_infoテーブル更新
-- `profileService.upsertUserKanjiKenteiLevel()`: user_kanji_kentei_level_countテーブル更新
+ユーザーが画像を400x400の正方形に切り取ってアバター画像として設定できる機能。
 
 ### 技術実装
+#### 使用ライブラリ
+- **react-easy-crop**: 画像切り取り機能（cropShape="round"で円形プレビュー）
+- **Canvas API**: 画像リサイズ・圧縮処理
+- **Supabase Storage**: 画像ファイル保存
+
 #### ファイル構成
 ```
-src/pages/ProfileEdit.tsx              # ルーティング用ページラッパー
-src/components/ProfileEdit.tsx         # 編集機能実装コンポーネント
+src/
+├── components/ui/image-crop-dialog.tsx    # 画像切り取りダイアログ
+├── services/api/storage.ts               # Supabaseストレージサービス
+├── constants/imageUpload.ts               # 画像制約定数
+└── components/ProfileEdit.tsx             # プロフィール編集（統合先）
 ```
 
-#### 状態管理
-- フォームデータの管理（既存のProfileFormDataベース）
-- バリデーション処理
-- API呼び出し状態管理（ローディング、エラー）
-
-#### 既存機能との連携
-- 合格回数入力：プロフィール作成画面と同じUI/ロジック
-- 級選択時の自動活性化、0回選択時の級解除機能
-- 「持っていない」選択肢の提供
-
-このプロジェクトは学習目的のSNSアプリケーションであり、ユーザーの学習体験を最優先に考慮した実装を心がけること。
-
-## プロフィール画像アップロード機能の実装方針
-
-### 機能概要
-プロフィール編集画面にて、ユーザーが画像を400x400の正方形に切り取ってアバター画像として設定できる機能。
-
-### UI/UX設計
-#### 画像アップロードフロー
-1. **画像選択**: ファイル選択ダイアログで画像を選択
-2. **画像クロップ**: react-easy-cropを使用した切り取りダイアログ
-   - 400x400の正方形切り取り
-   - 円形オーバーレイで実際の表示範囲を確認
-   - ユーザーが手動で範囲指定可能
-3. **プレビュー更新**: 切り取り後に即座にアバター表示を更新
-
-#### ファイル制限
-- **対応形式**: image/jpeg, image/png, image/webp
-- **サイズ制限**: 2MB以下
-- **出力形式**: JPEG (品質90%)
-
-### 技術実装
-#### ファイル構成
-```
-src/components/ui/image-crop-dialog.tsx    # 汎用画像切り取りダイアログ
-src/services/api/storage.ts               # Supabaseストレージサービス
-src/types/api/profile/request/UpdateProfileRequest.ts  # avatar_url追加
-```
+#### 処理フロー
+1. **画像選択**: ファイル選択ダイアログ（JPEG/PNG/WebP, 2MB以下）
+2. **画像切り取り**: react-easy-cropによる円形切り取りプレビュー
+   - aspect={1}: 1:1の正方形
+   - cropShape="round": 円形表示
+   - ドラッグ/ズーム操作対応
+3. **画像処理**: Canvas APIによる400x400リサイズ・JPEG圧縮
+   - 段階的品質調整（高→中→低）
+   - 2MB以下になるまで自動圧縮
+4. **アップロード**: Supabase Storage保存
+   - パス: `{user_id}/avatar.jpg`
+   - 既存ファイル自動上書き（upsert: true）
+5. **URL更新**: user_infoテーブルのavatar_url更新
 
 #### Supabaseストレージ設計
-- **バケット**: avatars（既存・RLS設定済み）
-- **ファイルパス**: `{user_id}/avatar.{ext}`
+- **バケット**: avatars（RLS設定済み）
 - **権限**: 本人のみ登録・更新・削除可能、閲覧は誰でも可能
-- **上書き**: 既存画像は自動削除してから新規アップロード
+- **キャッシュバスト**: URL末尾にタイムスタンプ追加
 
-#### API設計
-1. **storageService.uploadAvatar()**: 画像アップロード・既存削除
-2. **profileService.updateProfile()**: user_infoテーブルのavatar_url更新
-3. 両APIを順次実行してプロフィール更新完了
+### UI/UX仕様
+- **切り取りダイアログ**: 円形プレビューで実際の表示範囲を確認
+- **操作方法**: ドラッグで位置調整、ピンチ/スクロールでズーム
+- **エラーハンドリング**: ファイル形式・サイズ制限の明確な表示
+- **ローディング状態**: 処理中の適切なフィードバック
 
-#### 状態管理
-- ProfileEdit.tsxに画像アップロード状態を追加
-- フォームデータにavatarUrl反映
-- エラーハンドリング（ファイル形式・サイズ・アップロード失敗）
-
-### 実装手順
-1. Supabaseストレージサービス作成
-2. ImageCropDialog汎用コンポーネント作成
-3. UpdateProfileRequest型にavatar_url追加
-4. ProfileEdit.tsxに画像アップロード機能統合
-5. エラーハンドリング・バリデーション実装
+このプロジェクトは学習目的のSNSアプリケーションであり、ユーザーの学習体験を最優先に考慮した実装を心がけること。

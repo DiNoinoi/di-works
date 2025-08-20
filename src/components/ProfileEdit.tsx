@@ -372,6 +372,7 @@ export function ProfileEdit() {
                             size="sm"
                             onClick={handleImageSelect}
                             disabled={isImageUploading}
+                            className="border-gray-300"
                         >
                             <Upload className="w-4 h-4 mr-2" />
                             {isImageUploading ? 'アップロード中...' : '画像を変更'}
@@ -586,30 +587,30 @@ export function ProfileEdit() {
                                 <p className="text-sm text-red-600">{error}</p>
                             </div>
                         )}
-
-                        {/* ボタン */}
-                        <div className="flex gap-4 pt-4">
-                            <Button
-                                type="submit"
-                                className={`flex items-center gap-2 ${getPrimaryButtonClasses()}`}
-                                disabled={isLoading}
-                            >
-                                <Save className="w-4 h-4" />
-                                {isLoading ? '更新中...' : '保存する'}
-                            </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={handleBack}
-                                disabled={isLoading}
-                                className="border-gray-300"
-                            >
-                                キャンセル
-                            </Button>
-                        </div>
                     </form>
                 </CardContent>
             </Card>
+
+            {/* ボタン */}
+            <div className="flex gap-4 justify-center">
+                <Button
+                    onClick={handleSubmit}
+                    className={`flex items-center gap-2 ${getPrimaryButtonClasses()}`}
+                    disabled={isLoading}
+                >
+                    <Save className="w-4 h-4" />
+                    {isLoading ? '更新中...' : '保存する'}
+                </Button>
+                <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleBack}
+                    disabled={isLoading}
+                    className="border-gray-300"
+                >
+                    キャンセル
+                </Button>
+            </div>
 
             {/* 画像切り取りダイアログ */}
             <ImageCropDialog

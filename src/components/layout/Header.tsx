@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { User, ChevronDown, Settings as SettingsIcon, Eye } from 'lucide-react';
 import { authService } from '@/services/api/auth';
+import { profileService } from '@/services/api/profile';
+import { useLoginUserStore } from '@/stores/loginUserStore';
 import { APP_NAME } from '@/constants/app';
 
 interface HeaderProps {
@@ -24,13 +26,37 @@ interface HeaderProps {
 export function Header({ navigationItems }: HeaderProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  
-  // 一時的にモックデータを使用
-  const user = {
-    name: '漢字太郎',
-    avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
-  };
-  const isLoading = false;
+  const { userId } = useLoginUserStore();
+  const [user, setUser] = useState<{ name: string; avatarUrl: string | null } | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // ユーザー情報を取得
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!userId) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const profileData = await profileService.getUserProfile(userId);
+        setUser({
+          name: profileData.user_name,
+          avatarUrl: profileData.avatar_url
+        });
+      } catch (error) {
+        console.error('ヘッダーユーザー情報取得エラー:', error);
+        setUser({
+          name: 'ユーザー',
+          avatarUrl: null
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, [userId]);
 
   /**
    * ログアウト処理

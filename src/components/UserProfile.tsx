@@ -98,7 +98,7 @@ export function UserProfile() {
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex flex-col items-center">
                 <Avatar className="w-24 h-24">
-                  <AvatarImage src="" alt={profileData.user_name} />
+                  <AvatarImage src={profileData.avatar_url || ""} alt={profileData.user_name} />
                   <AvatarFallback className="text-2xl">{profileData.user_name[0]}</AvatarFallback>
                 </Avatar>
 
